@@ -1,9 +1,10 @@
-# Complete Ecommerce System Specification
+# Complete Ecommerce System Specification 
+# Requirement gathering and understanding :
 
 ## 1. System Actors
 
-### 1.1 Vendor
-### 1.2 Customer
+ 1.1 Vendor
+ 1.2 Customer
 ### 1.3 External Systems
 - Chargili API (Payments)
 - Meta API (Messenger)
@@ -89,3 +90,9 @@
 - System shall maintain comprehensive documentation
 - System shall support version control for content
 
+### 3. Use Cases Diagram : 
+![Use Case Diagram](docs/UseCaseDiagram.png)
+### 4. Activity Diagram : 
+![Activity Diagram](docs/ActivityDiagram.png)
+
+# System Design : 
