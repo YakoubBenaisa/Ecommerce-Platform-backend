@@ -1,0 +1,178 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+
+
+
+enum OrderStatus {
+  pending
+  processing
+  shipped
+  delivered
+  cancelled
+}
+
+enum PaymentMethod {
+  baridi_mob
+  cash_on_delivery
+}
+
+enum OrderSource {
+  messenger
+  platform
+  in_store
+}
+
+enum PaymentStatus {
+  pending
+  successful
+  failed
+}
+
+enum IntegrationMode {
+  live_mode
+  development_mode
+}
+
+
+
+model User {
+  id         String   @id @default(uuid())
+  email      String   @unique
+  password_hash String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  store     Store?
+}
+
+model Store {
+  id                      String           @id @default(uuid())
+  name                    String
+  description             String?
+  owner_id                String @unique
+  owner                   User             @relation(fields: [owner_id], references: [id] , onDelete: Cascade)
+  meta_integration_status Boolean          @default(false)
+  payment_setup_status    Boolean          @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  
+  products     Product[]
+  categories   Category[]
+  orders       Order[]
+  customers    Customer[]
+  
+  meta_integration MetaIntegration?
+  chargili_account ChargeliAccount?
+}
+
+model Product {
+  id             String   @id @default(uuid())
+  store_id       String
+  store          Store    @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  name           String
+  description    String?
+  price          Decimal
+  category_id    String?
+  category       Category? @relation(fields: [category_id], references: [id] , onDelete: SetNull)
+  inventory_count Int
+  images         Json?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  order_items OrderItem[]
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  store_id String
+  store    Store     @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  name     String
+  products Product[]
+}
+
+model Order {
+  id                   String       @id @default(uuid())
+  store_id             String
+  store                Store        @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  customer_id          String
+  customer             Customer     @relation(fields: [customer_id], references: [id], onDelete: Restrict)
+  total_amount         Decimal
+  status               OrderStatus  @default(pending)
+  payment_method       PaymentMethod
+  order_source         OrderSource  @default(platform)
+  customer_messenger_id String?
+  address              Json?
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  order_items OrderItem[]
+  payment     Payment?
+}
+
+model OrderItem {
+  
+  order_id   String
+  order      Order   @relation(fields: [order_id], references: [id] , onDelete: Cascade)
+  product_id String
+  product    Product @relation(fields: [product_id], references: [id] , onDelete: Restrict)
+  quantity   Int
+  unit_price Decimal
+  @@id([product_id , order_id])
+}
+
+model Customer {
+  id       String  @id @default(uuid())
+  name     String
+  email    String? @unique
+  phone    String? @unique
+  store_id String
+  store    Store   @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  orders Order[]
+}
+
+model Payment {
+  id               String        @id @default(uuid())
+  order_id         String        @unique
+  order            Order         @relation(fields: [order_id], references: [id], onDelete: Restrict)
+  amount           Decimal
+  payment_method   PaymentMethod
+  status           PaymentStatus @default(pending)
+  gateway_response Json?
+  created_at       DateTime      @default(now())
+  updated_at       DateTime      @updatedAt
+}
+
+model MetaIntegration {
+  id                 String         @id @default(uuid())
+  store_id           String         @unique
+  store              Store          @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  page_id            String
+  app_id             String
+  access_token       String
+  webhook_verify_token String
+  integration_status IntegrationMode @default(development_mode)
+  webhook_token      String?
+  webhook_port       Int?
+  webhook_url        String?
+  created_at         DateTime       @default(now())
+  updated_at         DateTime       @updatedAt
+}
+
+model ChargeliAccount {
+  id         String   @id @default(uuid())
+  store_id   String   @unique
+  store      Store    @relation(fields: [store_id], references: [id], onDelete: Cascade)
+  SECRET_KEY String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}

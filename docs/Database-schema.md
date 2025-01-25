@@ -1,7 +1,4 @@
-## Full Database Schema
-## Entity-Relationship Diagram :
 
-![ERD](ERD.png)
 
 ### Users Table
 ```markdown
@@ -148,3 +145,43 @@
 1. **Products and Orders**: 
    - **Through Order_Items**: Products can appear in multiple orders, and orders can contain multiple products. This relationship is managed via the `Order_Items` table, which connects the **Products** and **Orders** tables.
    
+
+   
+
+### Relationship Constraints Explanation
+
+
+
+#### 1. Cascade 
+   - Automatically deletes related records when the parent record is deleted
+   - Used when child records cannot exist without the parent
+   - Example: Deleting a Store deletes all its Products, Categories, Orders
+
+####  2. Restrict 
+   - Prevents deletion of a record if related records exist
+   - Protects against unintended data loss
+   - Example: Cannot delete a Customer with existing Orders
+
+#### 3. SetNull 
+   - Sets foreign key to NULL when parent record is deleted
+   - Allows child records to exist independently
+   - Example: Deleting a Category sets `category_id` to NULL in Products
+
+
+
+
+### Recommended Relationship Constraint Patterns
+
+1. **Strong Relationships (Cascade)**
+   - Store → Products
+   - Store → Categories
+   - Store → Orders
+   - Store → Customers
+
+2. **Protected Relationships (Restrict)**
+   - Order → Payment
+   - Customer → Orders
+
+3. **Flexible Relationships (SetNull)**
+   - Product → Category
+

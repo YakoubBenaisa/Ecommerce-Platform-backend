@@ -91,8 +91,23 @@
 - System shall support version control for content
 
 ### 3. Use Cases Diagram : 
-![Use Case Diagram](docs/UseCaseDiagram.png)
+![Use Case Diagram](docs/UseCaseDiagram.svg)
 ### 4. Activity Diagram : 
-![Activity Diagram](docs/ActivityDiagram.png)
+![Activity Diagram](docs/ActivityDiagram1.svg)
 
 # System Design : 
+
+![api design](docs/API-design.md)
+#  System Components :
+
+
+
+## Backend Components
+![component design](docs/C4Diagram1.svg)
+![component design](docs/Component.md)
+## Full Database Schema
+## Entity-Relationship Diagram :
+
+
+![data design](docs/ERD.png)
+![data design](docs/Database-schema.md)

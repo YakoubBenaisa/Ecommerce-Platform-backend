@@ -1,8 +1,4 @@
-# E-commerce System Components
 
-![Component Diagram](ComponentDiagram.png)
-
-## Backend Components
 
 ### Controllers
 - REST API endpoints
