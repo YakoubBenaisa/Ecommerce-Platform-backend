@@ -68,8 +68,8 @@
 
 ### 2.1 Performance
 - System shall load product pages within 3 seconds
-- System shall handle at least 1000 concurrent users
-- System shall process payment transactions within 5 seconds
+- System shall handle at least 10000 concurrent users
+- System shall process payment transactions within 3 seconds
 
 ### 2.2 Security
 - System shall encrypt all sensitive data in transit and at rest
@@ -86,7 +86,7 @@
 
 
 ### 2.6 Maintainability
-- System shall follow tier architecture
+- System shall follow layred architecture
 - System shall maintain comprehensive documentation
 - System shall support version control for content
 
