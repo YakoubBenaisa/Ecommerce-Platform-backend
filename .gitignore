@@ -6,3 +6,50 @@ docs/C4Diagram1.jpg
 docs/C4Diagram1.svg
 docs/ComponentV2.md
 docs/ERD.svg
+
+
+# Node.js
+backend/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build output
+backend/build/
+backend/dist/
+
+# TypeScript
+backend/*.tsbuildinfo
+
+# Environment files
+backend/.env
+backend/.env.local
+backend/.env.development.local
+backend/.env.test.local
+backend/.env.production.local
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+*.sln
+*.user
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+temp/
+.tmp/
+
+# Cache directories
+.cache/
+.eslintcache/
