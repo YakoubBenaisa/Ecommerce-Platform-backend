@@ -104,10 +104,10 @@
 
 ## Backend Components
 ![component design](docs/C4Diagram1.svg)
-![component design](docs/Component.md)
+[component design](docs/Component.md)
 ## Full Database Schema
 ## Entity-Relationship Diagram :
 
 
 ![data design](docs/ERD.png)
-![data design](docs/Database-schema.md)
+[data design](docs/Database-schema.md)
