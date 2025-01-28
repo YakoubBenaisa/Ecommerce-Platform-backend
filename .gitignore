@@ -1,3 +1,11 @@
+docs/C4Diagram1.jpg
+        docs/ComponentDiagram.pdf
+        docs/ComponentV2.md
+        docs/ERD.svg
+        docs/dbschema.txt
+        docs/s.svg
+        docs/useCaseDiagram.mdj
+        
 # Dependencies
 /backend/node_modules
 node_modules/
