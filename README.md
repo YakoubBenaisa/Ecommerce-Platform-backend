@@ -31,11 +31,6 @@
 
 ---
 
-### Key Improvements:
-
-1. **Consistency:** Used sub-numbering for subsections (e.g., 2.2.1, 2.3.1).
-2. **Alignment:** Indented related subsections for better readability.
-3. **Clear Structure:** Maintains a logical and visually appealing flow.
 
 # 1. Requirement Gathering and Understanding
 
