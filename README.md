@@ -240,7 +240,7 @@ Content-Type: application/json
 
 
 
-## Backend Components
+
 ![component design](docs/C4Diagram1.svg)
 
 
