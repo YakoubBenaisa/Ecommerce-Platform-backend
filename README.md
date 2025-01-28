@@ -1,8 +1,8 @@
 # Complete Ecommerce System Specification
 
-## Table of Contents
+## Table of Contents :
 
-# List of Figures
+## List of Figures :
 
 1. [Use Case Diagram](#use-case-diagram)
 2. [Activity Diagram](#activity-diagram)
