@@ -1,16 +1,17 @@
-docs/C4Diagram1.jpg
-        docs/ComponentDiagram.pdf
-        docs/ComponentV2.md
-        docs/ERD.svg
-        docs/dbschema.txt
-        docs/s.svg
-        docs/useCaseDiagram.mdj
-        
+/docs/C4Diagram1.jpg
+        /docs/ComponentDiagram.pdf
+        /docs/ComponentV2.md
+        /docs/ERD.svg
+        /docs/dbschema.txt
+        /docs/s.svg
+        /docs/useCaseDiagram.mdj
+
 # Dependencies
 /backend/node_modules
 node_modules/
 
 # Environment
+/backend/.env
 .env
 .env.local
 .env.development.local
@@ -31,6 +32,7 @@ yarn-error.log*
 # Build
 /dist
 /build
+/backend/build
 .next/
 
 # Misc

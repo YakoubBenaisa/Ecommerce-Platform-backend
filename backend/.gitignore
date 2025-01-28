@@ -1,26 +1,17 @@
-docs/C4Diagram1.jpg
-        docs/ComponentDiagram.pdf
-        docs/ComponentV2.md
-        docs/ERD.svg
-        docs/dbschema.txt
-        docs/s.svg
-        docs/useCaseDiagram.mdj
-        
-# Node.js
+/docs/C4Diagram1.jpg
+        /docs/ComponentDiagram.pdf
+        /docs/ComponentV2.md
+        /docs/ERD.svg
+        /docs/dbschema.txt
+        /docs/s.svg
+        /docs/useCaseDiagram.mdj
+
+# Dependencies
+/backend/node_modules
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
 
-# Build output
-build/
-dist/
-
-# TypeScript
-*.tsbuildinfo
-
-# Environment files
+# Environment
+/backend/.env
 .env
 .env.local
 .env.development.local
@@ -28,26 +19,23 @@ dist/
 .env.production.local
 
 # Logs
-logs/
-*.log
-*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
-# IDEs and editors
+# IDE
 .idea/
 .vscode/
 *.swp
 *.swo
-*.sln
-*.user
 
-# System files
+# Build
+/dist
+/build
+/backend/build
+.next/
+
+# Misc
 .DS_Store
-Thumbs.db
+*.pem
 
-# Temporary files
-temp/
-.tmp/
-
-# Cache directories
-.cache/
-.eslintcache/
