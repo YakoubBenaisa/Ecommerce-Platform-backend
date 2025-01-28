@@ -1,35 +1,46 @@
 # Complete Ecommerce System Specification
 
 ## Table of Contents
+
+# List of Figures
+
+1. [Use Case Diagram](#use-case-diagram)
+2. [Activity Diagram](#activity-diagram)
+3. [Component Design (C4 Diagram)](#component-design)
+4. [Entity-Relationship Diagram](#entity-relationship-diagram)
+
+---
+
 1. [Requirement Gathering and Understanding](#1-requirement-gathering-and-understanding)
+
    - [System Actors](#11-system-actors)
    - [Functional Requirements](#12-functional-requirements)
    - [Non-Functional Requirements](#13-non-functional-requirements)
-   - [Use Cases Diagram](#14-use-cases-diagram)
-   - [Activity Diagram](#15-activity-diagram)
+   - [Use Case Diagram](#use-case-diagram)
+   - [Activity Diagram](#activity-diagram)
 
-2. [System Design](#system-design)
+2. [System Design](#2-system-design)
    - [API Architecture](#system-api-design)
-     - [Base URL & Authentication](#1-api-architecture-overview)
-     - [Query Parameters](#2-query-parameters)
-     - [Error Responses](#3-error-responses)
-     - [Headers](#4-headers)
-   
-3. [System Architecture](#system-components)
-   - [Component Design](#controllers)
-   - [Data Storage](#data-storage)
-   - [Frontend](#frontend)
-   - [External Systems](#external-systems)
+   - [System Architecture](#system-architecture)  
+     &nbsp;&nbsp;&nbsp;&nbsp;- [Component Design (C4 Diagram)](#system-architecture)
+   - [Database Design](#full-database-schema)  
+     &nbsp;&nbsp;&nbsp;&nbsp;- [Entity-Relationship Diagram](#entity-relationship-diagram)  
+     &nbsp;&nbsp;&nbsp;&nbsp;-[Table Schemas](#users-table)  
+     &nbsp;&nbsp;&nbsp;&nbsp;- [Relationships](#relationships)  
+     &nbsp;&nbsp;&nbsp;&nbsp;- [Constraints](#relationship-constraints-explanation)
 
-4. [Database Design](#full-database-schema)
-   - [Entity-Relationship Diagram](#entity-relationship-diagram)
-   - [Table Schemas](#users-table)
-   - [Relationships](#relationships)
-   - [Constraints](#relationship-constraints-explanation)
+---
+
+### Key Improvements:
+
+1. **Consistency:** Used sub-numbering for subsections (e.g., 2.2.1, 2.3.1).
+2. **Alignment:** Indented related subsections for better readability.
+3. **Clear Structure:** Maintains a logical and visually appealing flow.
 
 # 1. Requirement Gathering and Understanding
 
 ## 1.1 System Actors
+
 1. Vendor
 2. Customer
 3. External Systems
@@ -41,19 +52,23 @@
 ### 1.2.1 Vendor Functions
 
 #### 1.2.1.1 Store Management
+
 - Create and manage store
 - Register and log in
 - Setup payouts and Meta integration
 
 #### 1.2.1.2 Product Management
+
 - Add, edit, delete products
 - Set prices, manage inventory, upload images
 
 #### 1.2.1.3 Category Management
+
 - Create and organize categories
 - Edit category structure
 
 #### 1.2.1.4 Order Management
+
 - View, process, and update orders
 - Handle website and Messenger orders
 - View history, generate reports
@@ -61,6 +76,7 @@
 ### 1.2.2 Customer Functions
 
 #### 1.2.2.1 Website Shopping
+
 - Browse, search, and view products
 - Manage cart and place orders
 - Choose payment:
@@ -69,6 +85,7 @@
 - Get order confirmations
 
 #### 1.2.2.2 Messenger Shopping
+
 - Browse and order products via Messenger
 - Use cash on delivery
 - Get confirmations and updates
@@ -76,16 +93,19 @@
 ### 1.2.3 System Functions
 
 #### 1.2.3.1 Payment Processing
+
 - Integrate Chargili API
 - Process payments and refunds
 - Manage cash on delivery orders
 
 #### 1.2.3.2 Meta Integration
+
 - Connect Messenger
 - Handle messages and orders
 - Send responses and updates
 
 #### 1.2.3.3 Order Processing
+
 - Validate info, track status
 - Send notifications, update inventory
 - Generate invoices
@@ -93,39 +113,48 @@
 ## 1.3 Non-Functional Requirements
 
 ### 1.3.1 Performance
+
 - System shall load product pages within 3 seconds
 - System shall handle at least 10000 concurrent users
 - System shall process payment transactions within 3 seconds
 
 ### 1.3.2 Security
+
 - System shall encrypt all sensitive data in transit and at rest
 - System shall implement rate limiting for API endpoints
 
 ### 1.3.3 Usability
+
 - System shall be accessible on mobile and desktop devices
 - System interface shall be intuitive and user-friendly
 - System shall provide clear error messages and feedback
 
 ### 1.3.4 Scalability
+
 - System shall implement caching mechanisms
 
 ### 1.3.5 Maintainability
+
 - System shall follow layered architecture
 - System shall maintain comprehensive documentation
 - System shall support version control for content
 
-### 3. Use Cases Diagram : 
+## Use Case Diagram
+
 ![Use Case Diagram](docs/UseCaseDiagram.svg)
-### 4. Activity Diagram : 
+
+## Activity Diagram
+
 ![Activity Diagram](docs/ActivityDiagram1.svg)
 
-# System Design : 
+# 2. System Design :
 
 # System API Design
 
 ## 1. API Architecture Overview
 
 ### Base URL Structure
+
 ```
 https://ecommerce.com
 ```
@@ -139,22 +168,19 @@ POST   /api/v1/auth/refresh-token
 POST   /api/v1/auth/logout
 ```
 
-
 ### JWT Payload Structure
+
 The payload includes user information and the associated storeId:
 
-
 {
-  "sub": "12345",                            // User ID (subject)
-  "email": "user@example.com",               // User's email
-  "storeId": "67890",                      // Associated store ID (null if not applicable)
-  "iat": 1691376400,                        // Issued at time (Unix timestamp)
-  "exp": 1691462800                         // Expiration time (Unix timestamp)
+"sub": "12345", // User ID (subject)
+"email": "user@example.com", // User's email
+"storeId": "67890", // Associated store ID (null if not applicable)
+"iat": 1691376400, // Issued at time (Unix timestamp)
+"exp": 1691462800 // Expiration time (Unix timestamp)
 }
 
 ### Store Management API
-
-
 
 ```
 GET    /api/v1/stores/{storeId}                 # Get store details and products
@@ -165,7 +191,6 @@ POST   /api/v1/stores/payment-setup     # Setup payment methods
 ```
 
 ### Product Management API
-
 
 ```
 POST   /api/v1/products                      # Create product
@@ -193,10 +218,6 @@ GET    /api/v1/orders                # List store orders
 PATCH  /api/v1/orders/{orderId}/status # Update order status
 ```
 
-
-
-
-
 ### Meta Integration API
 
 ```
@@ -210,14 +231,14 @@ GET   /api/v1/messenger/webhook                   # verify webhook
 ```
 POST   /api/v1/customers                                 # Create new customer
 PUT   /api/v1/customers/{customerID}                                # update customer details
-GET    /api/v1/customers                       # List store customers 
+GET    /api/v1/customers                       # List store customers
 GET    /api/v1/customers/{customerID}                # Get customer details and orders
 ```
-
 
 ## 2. Query Parameters
 
 Common query parameters for list endpoints:
+
 ```
 page: number (default: 1)
 limit: number (default: 20)
@@ -226,6 +247,7 @@ filter: object (endpoint-specific filters)
 ```
 
 Example product filtering:
+
 ```
 GET /api/v1/stores/{storeId}/products?
     category=cat_123&
@@ -252,41 +274,40 @@ GET /api/v1/stores/{storeId}/products?
 ## 4. Headers
 
 Required headers for all requests:
+
 ```
 Authorization: Bearer <token>
 Accept: application/json
 Content-Type: application/json
 ```
 
+# System Architecture
 
-
-#  System Components :
-
-
-
-
-![component design](docs/C4Diagram1.svg)
-
+![Component Design](docs/C4Diagram1.svg)
 
 ### Controllers
+
 - REST API endpoints
 - Request validation
 - Auth handling
 - Route management
 
 ### Services
+
 - Business logic
 - Transaction handling
 - Integration management
 - Data orchestration
 
 ### Repositories
+
 - Database operations
 - CRUD handling
 - Query management
 - Entity relations
 
 ### Order Builder
+
 - Order construction
 - Validation logic
 - Business rules
@@ -295,22 +316,25 @@ Content-Type: application/json
 ## Data Storage
 
 ### MySQL Database
+
 - Data storage
 
-
 ### Redis Cache
+
 ```markdown
 Store Products:
+
 - Product data caching
 
-
 Messenger Orders:
+
 - Chat order states
 - Conversation context
 - Real-time updates
 ```
 
 ### Public Storage
+
 - Image management
 - File uploads
 - Asset storage
@@ -319,6 +343,7 @@ Messenger Orders:
 ## Frontend
 
 ### Single Page Application
+
 - React.js UI
 - API integration
 - State management
@@ -327,24 +352,27 @@ Messenger Orders:
 ## External Systems
 
 ### Meta System
+
 - Facebook integration
 - Messenger communication
 - Webhook processing
 - Order syncing
 
 ### Chargili System
+
 - Payment processing
 - Authorization
 - Transaction management
 - Payment API integration
+
 ## Full Database Schema
-## Entity-Relationship Diagram :
 
+## Entity-Relationship Diagram
 
-![data design](docs/ERD.png)
-
+![Entity-Relationship Diagram](docs/ERD.png)
 
 ### Users Table
+
 ```markdown
 - `id`: UUID (Primary Key)
 - `email`: VARCHAR
@@ -354,16 +382,18 @@ Messenger Orders:
 ```
 
 ### Stores Table
+
 ```markdown
 - `id`: UUID (Primary Key)
 - `name`: VARCHAR
 - `description`: TEXT
-- `owner_id`: UUID  UNIQUE (Foreign Key to Users)
+- `owner_id`: UUID UNIQUE (Foreign Key to Users)
 - `meta_integration_status`: BOOLEAN
 - `payment_setup_status`: BOOLEAN
 ```
 
 ### Products Table
+
 ```markdown
 - `id`: UUID (Primary Key)
 - `store_id`: UUID (Foreign Key to Stores)
@@ -376,6 +406,7 @@ Messenger Orders:
 ```
 
 ### Categories Table
+
 ```markdown
 - `id`: UUID (Primary Key)
 - `store_id`: UUID (Foreign Key to Stores)
@@ -383,12 +414,13 @@ Messenger Orders:
 ```
 
 ### Orders Table
+
 ```markdown
 - `id`: UUID (Primary Key)
 - `store_id`: UUID (Foreign Key to Stores)
 - `customer_id`: UUID (Foreign Key to Customers)
 - `total_amount`: DECIMAL
-- `status`: ENUM 
+- `status`: ENUM
   - 'pending'
   - 'processing'
   - 'shipped'
@@ -403,6 +435,7 @@ Messenger Orders:
 ```
 
 ### Order_Items Table
+
 ```markdown
 - `id`: UUID (Primary Key)
 - `order_id`: UUID (Foreign Key to Orders)
@@ -412,6 +445,7 @@ Messenger Orders:
 ```
 
 ### Customers Table
+
 ```markdown
 - `id`: UUID (Primary Key)
 - `name`: VARCHAR
@@ -420,27 +454,26 @@ Messenger Orders:
 - `store_id`: UUID (Foreign Key to Stores)
 ```
 
-
-
 ### Payments Table
+
 ```markdown
 - `id`: UUID (Primary Key)
 - `order_id`: UUID UNIQUE (Foreign Key to Orders)
 - `amount`: DECIMAL
-- `payment_method`: ENUM 
+- `payment_method`: ENUM
   - 'baridi_mob'
   - 'cash_on_delivery'
-- `status`: ENUM 
+- `status`: ENUM
   - 'pending'
-  - 'successful' 
+  - 'successful'
   - 'failed'
 - `gateway_response`: JSON
 - `created_at`: TIMESTAMP
 - `updated_at`: TIMESTAMP
 ```
 
-
 ### Meta_Integration Table
+
 ```markdown
 - `id`: UUID (Primary Key)
 - `store_id`: UUID UNIQUE (Foreign Key to Stores)
@@ -459,6 +492,7 @@ Messenger Orders:
 ```
 
 ### Chargili_Account Table
+
 ```markdown
 - `id`: UUID (Primary Key)
 - `store_id`: UUID UNIQUE (Foreign Key to Stores)
@@ -467,17 +501,17 @@ Messenger Orders:
 - `updated_at`: TIMESTAMP
 ```
 
-
-
 ## Relationships
 
 ### One-to-One Relationships:
+
 1. `Stores.owner_id` → `Users.id`: Each store has a unique owner.
 2. `Payments.order_id` → `Orders.id`: Each payment corresponds to a unique order.
 3. `Meta_Integration.store_id` → `Stores.id`: Each store has one Meta integration.
 4. `Chargili_Account.store_id` → `Stores.id`: Each store has one Chargili account.
 
 ### One-to-Many Relationships:
+
 1. `Stores.id` → `Products.store_id`: A store can have multiple products.
 2. `Stores.id` → `Categories.store_id`: A store can have multiple categories.
 3. `Stores.id` → `Orders.store_id`: A store can have multiple orders.
@@ -486,46 +520,43 @@ Messenger Orders:
 5. `Categories.id` → `Products.category_id`: A category can include multiple products.
 
 ### Many-to-Many Relationships:
-1. **Products and Orders**: 
-   - **Through Order_Items**: Products can appear in multiple orders, and orders can contain multiple products. This relationship is managed via the `Order_Items` table, which connects the **Products** and **Orders** tables.
-   
 
-   
+1. **Products and Orders**:
+   - **Through Order_Items**: Products can appear in multiple orders, and orders can contain multiple products. This relationship is managed via the `Order_Items` table, which connects the **Products** and **Orders** tables.
 
 ### Relationship Constraints Explanation
 
+#### 1. Cascade
 
+- Automatically deletes related records when the parent record is deleted
+- Used when child records cannot exist without the parent
+- Example: Deleting a Store deletes all its Products, Categories, Orders
 
-#### 1. Cascade 
-   - Automatically deletes related records when the parent record is deleted
-   - Used when child records cannot exist without the parent
-   - Example: Deleting a Store deletes all its Products, Categories, Orders
+#### 2. Restrict
 
-####  2. Restrict 
-   - Prevents deletion of a record if related records exist
-   - Protects against unintended data loss
-   - Example: Cannot delete a Customer with existing Orders
+- Prevents deletion of a record if related records exist
+- Protects against unintended data loss
+- Example: Cannot delete a Customer with existing Orders
 
-#### 3. SetNull 
-   - Sets foreign key to NULL when parent record is deleted
-   - Allows child records to exist independently
-   - Example: Deleting a Category sets `category_id` to NULL in Products
+#### 3. SetNull
 
-
-
+- Sets foreign key to NULL when parent record is deleted
+- Allows child records to exist independently
+- Example: Deleting a Category sets `category_id` to NULL in Products
 
 ### Recommended Relationship Constraint Patterns
 
 1. **Strong Relationships (Cascade)**
+
    - Store → Products
    - Store → Categories
    - Store → Orders
    - Store → Customers
 
 2. **Protected Relationships (Restrict)**
+
    - Order → Payment
    - Customer → Orders
 
 3. **Flexible Relationships (SetNull)**
    - Product → Category
-
