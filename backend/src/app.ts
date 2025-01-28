@@ -1,26 +1,20 @@
-import express, { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import express, { Application } from "express";
+import routes from "./routes";
 
-const app = express();
-const port = 3000;
+const app: Application = express();
 
-// Middleware
+// Middleware to parse JSON
 app.use(express.json());
 
-// Instantiate Prisma Client
-const prisma = new PrismaClient();
 
-// Routes
-app.get('/', (req: Request, res: Response) => {
-  res.send('Hello');
-});
+
+// Register routes
+app.use("/api/v1", routes);
 
 
 
-
-
-
-// Start Server
-app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+// Start the server
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
