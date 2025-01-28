@@ -1,39 +1,66 @@
-# Complete Ecommerce System Specification 
-# Requirement gathering and understanding :
+# Complete Ecommerce System Specification
 
-## 1. System Actors
+## Table of Contents
+1. [Requirement Gathering and Understanding](#1-requirement-gathering-and-understanding)
+   - [System Actors](#11-system-actors)
+   - [Functional Requirements](#12-functional-requirements)
+   - [Non-Functional Requirements](#13-non-functional-requirements)
+   - [Use Cases Diagram](#14-use-cases-diagram)
+   - [Activity Diagram](#15-activity-diagram)
 
- 1.1 Vendor
- 1.2 Customer
-### 1.3 External Systems
-- Chargili API (Payments)
-- Meta API (Messenger)
+2. [System Design](#system-design)
+   - [API Architecture](#system-api-design)
+     - [Base URL & Authentication](#1-api-architecture-overview)
+     - [Query Parameters](#2-query-parameters)
+     - [Error Responses](#3-error-responses)
+     - [Headers](#4-headers)
+   
+3. [System Architecture](#system-components)
+   - [Component Design](#controllers)
+   - [Data Storage](#data-storage)
+   - [Frontend](#frontend)
+   - [External Systems](#external-systems)
 
-## 2. Functional Requirements
+4. [Database Design](#full-database-schema)
+   - [Entity-Relationship Diagram](#entity-relationship-diagram)
+   - [Table Schemas](#users-table)
+   - [Relationships](#relationships)
+   - [Constraints](#relationship-constraints-explanation)
 
-### 2.1 Vendor Functions
+# 1. Requirement Gathering and Understanding
 
-#### Store Management
+## 1.1 System Actors
+1. Vendor
+2. Customer
+3. External Systems
+   - Chargili API (Payments)
+   - Meta API (Messenger)
+
+## 1.2 Functional Requirements
+
+### 1.2.1 Vendor Functions
+
+#### 1.2.1.1 Store Management
 - Create and manage store
 - Register and log in
 - Setup payouts and Meta integration
 
-#### Product Management
+#### 1.2.1.2 Product Management
 - Add, edit, delete products
 - Set prices, manage inventory, upload images
 
-#### Category Management
+#### 1.2.1.3 Category Management
 - Create and organize categories
 - Edit category structure
 
-#### Order Management
+#### 1.2.1.4 Order Management
 - View, process, and update orders
 - Handle website and Messenger orders
 - View history, generate reports
 
-### 2.2 Customer Functions
+### 1.2.2 Customer Functions
 
-#### Website Shopping
+#### 1.2.2.1 Website Shopping
 - Browse, search, and view products
 - Manage cart and place orders
 - Choose payment:
@@ -41,52 +68,49 @@
   - Baridimob
 - Get order confirmations
 
-#### Messenger Shopping
+#### 1.2.2.2 Messenger Shopping
 - Browse and order products via Messenger
 - Use cash on delivery
 - Get confirmations and updates
 
-### 2.3 System Functions
+### 1.2.3 System Functions
 
-#### Payment Processing
+#### 1.2.3.1 Payment Processing
 - Integrate Chargili API
 - Process payments and refunds
 - Manage cash on delivery orders
 
-#### Meta Integration
+#### 1.2.3.2 Meta Integration
 - Connect Messenger
 - Handle messages and orders
 - Send responses and updates
 
-#### Order Processing
+#### 1.2.3.3 Order Processing
 - Validate info, track status
 - Send notifications, update inventory
 - Generate invoices
 
+## 1.3 Non-Functional Requirements
 
-## 2. Non-Functional Requirements
-
-### 2.1 Performance
+### 1.3.1 Performance
 - System shall load product pages within 3 seconds
 - System shall handle at least 10000 concurrent users
 - System shall process payment transactions within 3 seconds
 
-### 2.2 Security
+### 1.3.2 Security
 - System shall encrypt all sensitive data in transit and at rest
 - System shall implement rate limiting for API endpoints
 
-### 2.3 Usability
+### 1.3.3 Usability
 - System shall be accessible on mobile and desktop devices
 - System interface shall be intuitive and user-friendly
 - System shall provide clear error messages and feedback
 
-
-### 2.4 Scalability
+### 1.3.4 Scalability
 - System shall implement caching mechanisms
 
-
-### 2.6 Maintainability
-- System shall follow layred architecture
+### 1.3.5 Maintainability
+- System shall follow layered architecture
 - System shall maintain comprehensive documentation
 - System shall support version control for content
 
