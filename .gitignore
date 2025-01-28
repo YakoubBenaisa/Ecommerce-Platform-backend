@@ -39,3 +39,15 @@ yarn-error.log*
 .DS_Store
 *.pem
 
+# Node modules
+backend/node_modules/
+backend/node_modules/.package-lock.json
+
+# Specific documentation files
+docs/ComponentDiagram.pdf
+docs/ComponentV2.md
+docs/ERD.svg
+docs/dbschema.txt
+docs/s.svg
+docs/useCaseDiagram.mdj
+
