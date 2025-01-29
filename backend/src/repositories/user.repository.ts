@@ -1,15 +1,16 @@
 
 import IUserRepository from "./interfaces/IUserRepository";
-import { container, injectable } from "tsyringe";
+import { container, inject, injectable } from "tsyringe";
 import db from "../config/db";
+import { PrismaClient } from "@prisma/client";
 
-const prismaInstance = container.resolve(db);
-const prisma = prismaInstance.getClient();
 
 @injectable()
 export default class UserRepository implements IUserRepository {
+
+  constructor(@inject("db") private prisma:PrismaClient){}
   async findById(id: string) {
-    const user = await prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { id },
       include: {
         store: {
@@ -26,14 +27,14 @@ export default class UserRepository implements IUserRepository {
     password_hash: string;
     username: string;
   }) {
-    const user = await prisma.user.create({
+    const user = await this.prisma.user.create({
       data: userData,
     });
     return user;
   }
 
   async findByEmail(email: string) {
-    const user = await prisma.user.findUnique({
+    const user = await this.prisma.user.findUnique({
       where: { email },
       include: {
         store: {

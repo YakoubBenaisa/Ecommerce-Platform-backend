@@ -12,7 +12,7 @@ export class UserService implements IUserService {
     @inject("IRefreshTokenRepository")
     private refreshTokenRepository: IRefreshTokenRepository,
     @inject("jwt") private jwt: JwtUtils
-  ) {}
+  ) { }
 
   async register(email: string, password: string, username: string) {
     const existingUser = await this.userRepository.findByEmail(email);

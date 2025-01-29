@@ -9,7 +9,7 @@ export default class UserController {
   constructor(
     @inject("IUserService") private userService: IUserService,
     @inject("responseUtils") private responseUtils: ResponseUtils
-  ) {}
+  ) { }
 
   async login(req: Request, res: Response) {
     try {

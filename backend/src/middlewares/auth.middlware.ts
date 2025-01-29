@@ -2,12 +2,13 @@ import { Request, Response, NextFunction } from "express";
 import { container } from "../config/container";
 import ResponseUtils from "../utils/response.utils";
 import JwtUtils from "../utils/jwt.utils";
+import { RequestWithUser } from "../types/types";
 
 const jwt = container.resolve(JwtUtils);
 const responseUtils = container.resolve(ResponseUtils);
 
 export default async function authMiddleware(
-  req: Request & { user?: any },
+  req: RequestWithUser,
   res: Response,
   next: NextFunction
 ): Promise<void> {

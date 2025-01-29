@@ -1,10 +1,10 @@
 import { PrismaClient, User } from "@prisma/client";
-import { UserWithStore } from "../../types/types";
+import { TUserWithStore } from "../../types/types";
 
 export default interface IUserRepository {
 
 
-  findById(id:string):Promise<UserWithStore | null>;
+  findById(id:string):Promise<TUserWithStore | null>;
   
   createUser(user: {
     email: string;
@@ -14,5 +14,5 @@ export default interface IUserRepository {
 
   findByEmail(
     email: string
-  ): Promise<UserWithStore | null>;
+  ): Promise<TUserWithStore | null>;
 }

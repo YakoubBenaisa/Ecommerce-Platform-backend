@@ -83,7 +83,7 @@ model Store {
   customers    Customer[]
   
   meta_integration MetaIntegration?
-  chargili_account ChargeliAccount?
+  chargili_account ChargiliAccount?
 }
 
 model Product {
@@ -174,14 +174,14 @@ model MetaIntegration {
   access_token       String
   webhook_verify_token String
   integration_status IntegrationMode @default(development_mode)
-  webhook_token      String?
-  webhook_port       Int?
-  webhook_url        String?
+  webhook_token      String
+  webhook_port       Int
+  webhook_url        String
   created_at         DateTime       @default(now())
   updated_at         DateTime       @updatedAt
 }
 
-model ChargeliAccount {
+model ChargiliAccount {
   id         String   @id @default(uuid())
   store_id   String   @unique
   store      Store    @relation(fields: [store_id], references: [id], onDelete: Cascade)

@@ -8,7 +8,12 @@ import ResponseUtils from "../utils/response.utils";
 import JwtUtils from "../utils/jwt.utils";
 import db from "./db";
 import IRefreshTokenRepository from "../repositories/interfaces/IRefreshTokenInterface";
-import  RefreshTokenRepository  from "../repositories/refreshToken.repository";
+import RefreshTokenRepository from "../repositories/refreshToken.repository";
+import IStoreService from "../services/Interfaces/IStoreService";
+import StoreService from "../services/store.service";
+import IStoreRepository from "../repositories/interfaces/IStoreRepository";
+import StoreRepository from "../repositories/store.repository";
+
 
 container.register<IUserRepository>("IUserRepository", {
   useClass: UserRepository,
@@ -30,5 +35,15 @@ container.register("jwt", {
 });
 
 container.register("db", { useClass: db });
+
+
+container.register<IStoreRepository>("IStoreRepository", {
+  useClass: StoreRepository,
+});
+
+container.register<IStoreService>("IStoreService", {
+  useClass: StoreService,
+});
+
 
 export { container };
