@@ -19,6 +19,7 @@ export default class UserController {
 
       this.responseUtils.sendSuccessResponse(res, token);
     } catch (error: any) {
+      console.log(error);
       this.responseUtils.sendErrorResponse(res, error.message);
     }
   }
@@ -31,6 +32,7 @@ export default class UserController {
 
       this.responseUtils.sendSuccessResponse(res, tokens, 201);
     } catch (error: any) {
+      console.log(error);
       this.responseUtils.sendErrorResponse(res, error.message);
     }
   }

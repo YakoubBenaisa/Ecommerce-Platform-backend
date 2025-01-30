@@ -21,6 +21,7 @@ export default async function authMiddleware(
     }
 
     const user = await jwt.getUserFromToken(token);
+    
 
     
 

@@ -1,14 +1,17 @@
-
 import IUserRepository from "./interfaces/IUserRepository";
 import { container, inject, injectable } from "tsyringe";
 import db from "../config/db";
 import { PrismaClient } from "@prisma/client";
-
+import { NotFoundError } from "../types/errors";
 
 @injectable()
 export default class UserRepository implements IUserRepository {
+  private prisma: PrismaClient;
 
-  constructor(@inject("db") private prisma:PrismaClient){}
+  constructor(@inject("db") private prismaService: db) {
+    this.prisma = prismaService.getClient();
+  }
+
   async findById(id: string) {
     const user = await this.prisma.user.findUnique({
       where: { id },
@@ -20,8 +23,12 @@ export default class UserRepository implements IUserRepository {
         },
       },
     });
+
+    if (!user) throw new NotFoundError("User");
+
     return user;
   }
+
   async createUser(userData: {
     email: string;
     password_hash: string;
@@ -44,6 +51,8 @@ export default class UserRepository implements IUserRepository {
         },
       },
     });
+
+    if (!user) throw new NotFoundError("User");
     return user;
   }
 }

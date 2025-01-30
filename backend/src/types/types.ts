@@ -24,14 +24,17 @@ export interface TStoreWithProducts extends Store {
   products: TProductWithCategory;
 }
 
-export type TStoreWrite = Omit<Store, "id" | "owner_id" | "created_at" | "updated_at"| "meta_integration_status" | "payment_setup_status">;
+export type TStoreCreate = Omit<Store, "id" |  "created_at" | "updated_at"| "meta_integration_status" | "payment_setup_status">;
 
 export type TStoreUpdate = Partial<Store>;
 
 
 //________________ Product types _______________________
+
 export interface TProductWithCategory extends Product {
   categories: Category[ ];}
+  export type TProductCreate = Omit<Product, "id"  | "created_at" | "updated_at">;
+  export type TProductUpdate = Partial<Product>;
 
   //________________ MetaIntegration types _______________________
 

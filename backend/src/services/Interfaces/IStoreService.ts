@@ -1,12 +1,12 @@
 import { Store } from "@prisma/client";
 import {
           TStoreUpdate,
-          TStoreWrite,
           TStoreWithProducts,
+          TStoreCreate,
 } from "../../types/types";
 
 export default interface IStoreService {
-          createStore(storeData: TStoreWrite, ownerId: string): Promise<Store>;
-          updateStore(id: string, storeData: TStoreUpdate): Promise<Store | null>;
+          createStore(storeData: TStoreCreate): Promise<Store>;
+          updateStore( storeData: TStoreUpdate): Promise<Store | null>;
           getStoreById(id: string): Promise<TStoreWithProducts | null>;
 }

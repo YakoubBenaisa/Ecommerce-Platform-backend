@@ -1,27 +1,38 @@
 import { Router, Request, Response } from "express";
 import { container } from "../config/container";
 import StoreController from "../controllers/store.controller";
+import authMiddleware from "../middlewares/auth.middlware";
+import { validateRequest } from "../middlewares/RequestValidation.middlware";
+import {
+  storeCreateSchema,
+  storeUpdateSchema,
+} from "../validation/store.validation";
 
 const storeRouter = Router();
 const storeController = container.resolve(StoreController);
 
 storeRouter.post(
-          "/",
+  "/",
+  authMiddleware,
+  validateRequest(storeCreateSchema),
 
-          (req: Request, res: Response):Promise<any> => storeController.createStore(req, res)
+  async (req: Request, res: Response): Promise<any> =>
+    await storeController.createStore(req, res)
 );
 
 storeRouter.put(
-          "/:id",
+  "/:id",
+  authMiddleware,
+  validateRequest(storeUpdateSchema),
 
-          (req: Request, res: Response):Promise<any> => storeController.updateStore(req, res)
+  async (req: Request, res: Response): Promise<any> =>
+    await storeController.updateStore(req, res)
 );
 
 storeRouter.get(
-          "/:id",
-          (req: Request, res: Response):Promise<any> => storeController.getStoreById(req, res)
+  "/:id",
+  async (req: Request, res: Response): Promise<any> =>
+    await storeController.getStoreById(req, res)
 );
 
-export default storeRouter; 
-
-
+export default storeRouter;

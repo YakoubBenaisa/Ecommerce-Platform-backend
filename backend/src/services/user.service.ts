@@ -15,6 +15,7 @@ export class UserService implements IUserService {
   ) { }
 
   async register(email: string, password: string, username: string) {
+
     const existingUser = await this.userRepository.findByEmail(email);
     if (existingUser) throw new Error("User already exists");
 
@@ -25,6 +26,8 @@ export class UserService implements IUserService {
       password_hash,
       username,
     });
+
+    console.log(user);
 
     const accessToken = this.jwt.generateAccessToken(
       user.id,
@@ -37,7 +40,7 @@ export class UserService implements IUserService {
     const expiresAt = new Date();
     expiresAt.setDate(expiresAt.getDate() + 15);
 
-    await this.refreshTokenRepository.create(user.id, refreshToken, expiresAt);
+     await this.refreshTokenRepository.create(user.id, refreshToken, expiresAt);
 
     return { accessToken, refreshToken };
   }
