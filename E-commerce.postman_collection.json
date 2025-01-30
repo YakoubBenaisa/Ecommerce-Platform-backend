@@ -118,6 +118,90 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Store",
+			"item": [
+				{
+					"name": "Create Store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"My Store\",\n  \"description\": \"A great store for all your needs\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}store",
+							"host": ["{{baseUrl}}"],
+							"path": ["store"]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Store",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Store Name\",\n  \"description\": \"Updated store description\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}store/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["store", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "Store ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Store by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}store/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["store", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "",
+									"description": "Store ID"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
 		}
 	],
 	"event": [
