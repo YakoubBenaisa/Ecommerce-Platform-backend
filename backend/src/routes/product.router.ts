@@ -9,14 +9,20 @@ import {
   
   storeIdParamSchema,
 } from "../validations/product.validation";
+import imagesMiddleware from "../middlewares/images.middlware";
+
+import ImageUtils from "../utils/images.utils";
 
 const router = Router();
 const productController = container.resolve(ProductController);
+const imageUtils = container.resolve(ImageUtils);
 
 router.post(
-  "/",
+  "/", 
   authMiddleware,
+  imagesMiddleware,
   validateRequest(createProductSchema),
+  
   async (req, res): Promise<any> => await productController.create(req, res)
 );
 

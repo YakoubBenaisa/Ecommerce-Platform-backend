@@ -6,7 +6,7 @@ import { validateRequest } from "../middlewares/RequestValidation.middlware";
 import {
   storeCreateSchema,
   storeUpdateSchema,
-} from "../validation/store.validation";
+} from "../validations/store.validation";
 
 const storeRouter = Router();
 const storeController = container.resolve(StoreController);

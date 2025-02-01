@@ -3,6 +3,8 @@ import { inject, injectable } from "tsyringe";
 import IProductService from "../services/Interfaces/IProductService";
 import { TProductCreate, TProductUpdate, RequestWithUser } from "../types/types";
 import ResponseUtils from "../utils/response.utils";
+import {z} from "zod"
+import { createProductSchema } from "../validations/product.validation";
 
 
 @injectable()
@@ -14,8 +16,12 @@ export default class ProductController {
 
     async create(req: RequestWithUser, res: Response): Promise<Response> {
         try {
+             
+            
+            req.body = createProductSchema.parse(req.body);
+
             const productData: TProductCreate = { ...req.body, store_id: req.user.storeId };
-            console.log(productData);
+            console.log("Product Data ::",productData);
             
             const newProduct = await this.productService.create(productData);
             return this.responseUtils.sendSuccessResponse(res, newProduct, 201);

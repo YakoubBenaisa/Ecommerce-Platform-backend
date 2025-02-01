@@ -52,7 +52,7 @@ export default class UserRepository implements IUserRepository {
       },
     });
 
-    if (!user) throw new NotFoundError("User");
+   
     return user;
   }
 }

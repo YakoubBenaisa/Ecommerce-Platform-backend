@@ -1,4 +1,5 @@
-import { User ,Store,Product, Category, MetaIntegration , ChargiliAccount } from "@prisma/client";
+import { User ,Store,Product, Category, MetaIntegration , ChargiliAccount,Prisma } from "@prisma/client";
+import { Decimal, JsonValue } from "@prisma/client/runtime/library";
 import { Request } from "express";
 
 
@@ -31,15 +32,38 @@ export type TStoreUpdate = Partial<Store>;
 
 //________________ Product types _______________________
 
-export interface TProductWithCategory extends Product {
-  categories: Category[ ];}
-  export type TProductCreate = Omit<Product, "id"  | "created_at" | "updated_at">;
-  export type TProductUpdate = Partial<Product>;
 
-  //________________ MetaIntegration types _______________________
 
-  export type TMetaIntegration = Omit<MetaIntegration, "id" | "store_id" | "created_at" | "updated_at">;
-  //________________ types _______________________
+export type TProductWithCategory = Prisma.ProductGetPayload<{
+  include: {
+    category: true;
+  }
+}>;
+
+
+
+// Ensure 'images' is typed correctly to match Prisma's expected type
+export type TProductCreate = Omit<Prisma.ProductCreateInput, "id" | "created_at" | "updated_at"> & {
+  images?: Prisma.InputJsonValue | null;  // Correct type for 'images'
+};
+
+
+export type TProductUpdate = {
+  id: string; // Required for updates
+  name?: string; 
+  description?: string | null;
+  price?: Decimal;
+  category_id?: string | null;
+  inventory_count?: number;
+  images?: JsonValue;
+  store_id: string; // Keep store_id as required
+};
+
+
+//________________ MetaIntegration types _______________________
+
+export type TMetaIntegration = Omit<MetaIntegration, "id" | "store_id" | "created_at" | "updated_at">;
+//________________ types _______________________
 
 export type TChargiliAccount = Omit<ChargiliAccount, "id" | "store_id" | "created_at" | "updated_at">;
 

@@ -5,7 +5,7 @@ import { validateRequest } from "../middlewares/RequestValidation.middlware";
 import {
   userLoginSchema,
   userRegistrationSchema,
-} from "../validation/user.validation";
+} from "../validations/user.validation";
 import authMiddleware from "../middlewares/auth.middlware";
 
 const userRouter = Router();
