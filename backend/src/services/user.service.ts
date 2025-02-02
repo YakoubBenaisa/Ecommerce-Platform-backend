@@ -1,9 +1,10 @@
 import bcrypt from "bcryptjs";
 import IUserService from "./Interfaces/IUserService";
 import IUserRepository from "../repositories/interfaces/IUserRepository";
-import IRefreshTokenRepository from "../repositories/interfaces/IRefreshTokenInterface"; // Add a repository for the RefreshToken
+import IRefreshTokenRepository from "../repositories/interfaces/IRefreshTokenInterface"; 
 import { inject, injectable } from "tsyringe";
 import JwtUtils from "../utils/jwt.utils";
+import { ConflictError, NotFoundError,InternalServerError,UnauthorizedError } from "../types/errors";
 
 @injectable()
 export class UserService implements IUserService {
@@ -15,9 +16,9 @@ export class UserService implements IUserService {
   ) { }
 
   async register(email: string, password: string, username: string) {
-
+try{
     const existingUser = await this.userRepository.findByEmail(email);
-    if (existingUser) throw new Error("User already exists");
+    if (existingUser) throw new ConflictError("User already exists");
 
     const password_hash = await bcrypt.hash(password, 10);
 
@@ -43,14 +44,19 @@ export class UserService implements IUserService {
      await this.refreshTokenRepository.create(user.id, refreshToken, expiresAt);
 
     return { accessToken, refreshToken };
+  } catch (error) {
+    if (error instanceof ConflictError) throw error;
+    throw new InternalServerError("Failed to register user");
+  }
   }
 
   async login(email: string, password: string) {
+    try{
     const user = await this.userRepository.findByEmail(email);
-    if (!user) throw new Error("User not found");
+    if (!user) throw new NotFoundError("User");
 
     const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-    if (!isPasswordValid) throw new Error("Invalid Credentials");
+    if (!isPasswordValid) throw new UnauthorizedError("Invalid Credentials");
 
     const storeId = user.store?.id || null;
     const accessToken = this.jwt.generateAccessToken(
@@ -66,6 +72,12 @@ export class UserService implements IUserService {
     await this.refreshTokenRepository.create(user.id, refreshToken, expiresAt);
 
     return { accessToken, refreshToken };
+  } catch (error) {
+    if (error instanceof NotFoundError || error instanceof UnauthorizedError) {
+      throw error;
+    }
+    throw new InternalServerError("Failed to login");
+  }
   }
 
   async refreshTokens(refreshToken: string) {
@@ -81,11 +93,11 @@ export class UserService implements IUserService {
         storedRefreshToken.token !== refreshToken ||
         storedRefreshToken.expires_at < new Date()
       ) {
-        throw new Error("Invalid refresh token ");
+        throw new UnauthorizedError("Invalid refresh token");
       }
 
       const user = await this.userRepository.findById(userId);
-      if (!user) throw new Error("User not found");
+      if (!user) throw new NotFoundError("User");
 
       const storeId = user.store?.id || null;
       const newAccessToken = this.jwt.generateAccessToken(
@@ -110,8 +122,10 @@ export class UserService implements IUserService {
 
       return { accessToken: newAccessToken, refreshToken: newRefreshToken };
     } catch (error) {
-      console.log(error);
-      throw new Error("Invalid refresh token ");
+      if (error instanceof UnauthorizedError || error instanceof NotFoundError) {
+        throw error;
+      }
+      throw new InternalServerError("Failed to refresh tokens");
     }
   }
 
@@ -120,8 +134,11 @@ export class UserService implements IUserService {
       const userId = this.jwt.getUserIdFromToken(token);
 
       await this.refreshTokenRepository.deleteByUserId(userId);
-    } catch (error: any) {
-      throw new Error(error.message);
+    } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        throw error;
+      }
+      throw new InternalServerError("Failed to logout");
     }
   }
 }

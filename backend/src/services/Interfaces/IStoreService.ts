@@ -8,5 +8,5 @@ import {
 export default interface IStoreService {
           createStore(storeData: TStoreCreate): Promise<Store>;
           updateStore( storeData: TStoreUpdate): Promise<Store | null>;
-          getStoreById(id: string): Promise<TStoreWithProducts | null>;
+          getStoreByIdWithProducts(id: string): Promise<TStoreWithProducts | null>;
 }

@@ -2,116 +2,118 @@ import { injectable, inject } from "tsyringe";
 import { TProductCreate, TProductUpdate } from "../types/types";
 import IProductService from "./Interfaces/IProductService";
 import IProductRepository from "../repositories/interfaces/IProductRepository";
+import { 
+  ConflictError, 
+  NotFoundError, 
+  InternalServerError 
+} from "../types/errors";
 
 @injectable()
 export default class ProductService implements IProductService {
   constructor(
     @inject("IProductRepository") private productRepository: IProductRepository
-  ) {console.log("Productser")}
+  ) {}
 
   async create(data: TProductCreate) {
     try {
-      const product = await this.productRepository.create(data);
-      console.log(product);
-      return product;
+      return await this.productRepository.create(data);
     } catch (error) {
-      console.log(error);
-      throw new Error("Failed to create product. Please try again.");
+      
+      throw new InternalServerError("Failed to create product");
     }
   }
 
   async update(data: TProductUpdate) {
     try {
-      const product = await this.productRepository.findById(data.id);
-      if (!product) throw new Error(`Product with ID ${data.id} not found.`);
+      const product = await this.findById(data.id);
+     
 
       return await this.productRepository.update(data);
     } catch (error) {
-      console.log(error);
-      throw new Error("Failed to update product. Please try again.");
+      if (error instanceof NotFoundError) {
+        throw error;
+      }
+     
+      throw new InternalServerError("Failed to update product");
     }
   }
 
   async delete(id: string) {
     try {
-      const product = await this.productRepository.findById(id);
-      if (!product) throw new Error(`Product with ID ${id} not found.`);
-
+      const product = await this.findById(id);
+     
       return await this.productRepository.delete(id);
+
     } catch (error) {
-      console.log(error);
-      throw new Error("Failed to delete product. Please try again.");
+      if (error instanceof NotFoundError) 
+        throw error;
+      
+      throw new InternalServerError("Failed to delete product");
     }
   }
 
   async findById(id: string) {
     try {
       const product = await this.productRepository.findById(id);
-      if (!product) throw new Error(`Product with ID ${id} not found.`);
-
+      if (!product) 
+        throw new NotFoundError(`Product`);
+      
       return product;
     } catch (error) {
-      console.log(error);
-      throw new Error("Failed to find product. Please try again.");
+      if (error instanceof NotFoundError) {
+        throw error;
+      }
+      throw new InternalServerError("Failed to find product");
     }
   }
 
   async findByStoreId(store_id: string) {
     try {
-      const products = await this.productRepository.findByStoreId(store_id);
-      if (!products || products.length === 0)
-        return null;
-
-      return products;
+      return this.productRepository.findByStoreId(store_id);
+      
     } catch (error) {
-      console.log(error);
-      throw new Error(
-        "Failed to find products for this store. Please try again."
-      );
+      throw new InternalServerError("Failed to retrieve store products");
     }
   }
 
   async findByCategoryId(category_id: string) {
     try {
-      const products = await this.productRepository.findByCategoryId(
-        category_id
-      );
-      if (!products || products.length === 0)
-        throw new Error(`No products found for category ID ${category_id}.`);
-
+      const products = await this.productRepository.findByCategoryId(category_id);
+      if (!products || products.length === 0) {
+        throw new NotFoundError(` products`);
+      }
       return products;
     } catch (error) {
-      throw new Error(
-        "Failed to find products for this category. Please try again."
-      );
+      if (error instanceof NotFoundError) {
+        throw error;
+      }
+      throw new InternalServerError("Failed to retrieve category products");
     }
   }
 
-  async CheckInventory(
-    inventoryData: { id: string; inventory_count: string }[]
-  ) {
+  async CheckInventory(inventoryData: { id: string; inventory_count: string }[]) {
     try {
       const productIds = inventoryData.map((item) => item.id);
+      const products = await this.productRepository.findByIdsToCheckInventory(productIds);
 
-      const products = await this.productRepository.findByIdsToCheckInventory(
-        productIds
-      );
-
-      return inventoryData.every((item) => {
+      for (const item of inventoryData) {
         const product = products.find((p) => p.id === item.id);
-        if (!product)
-          throw new Error(`Product with ID ${item.id} not found.`);
+        if (!product) 
+          throw new NotFoundError(`Product`);
+        
 
         const requestedCount = parseInt(item.inventory_count);
-        if (product.inventory_count <= requestedCount)
-          throw new Error(
-            `Insufficient inventory for product ${product.name}.`
-          );
-        return product.inventory_count >= requestedCount;
-      });
+        if (product.inventory_count < requestedCount) 
+          throw new ConflictError(`Insufficient inventory for product ${product.name}`);
+        
+      }
+
+      return true;
     } catch (error) {
-      console.log(error);
-      return false;
+      if (error instanceof NotFoundError || error instanceof ConflictError) {
+        throw error;
+      }
+      throw new InternalServerError("Failed to check inventory");
     }
   }
 }
