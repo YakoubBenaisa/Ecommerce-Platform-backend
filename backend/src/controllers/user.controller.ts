@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import IUserService from "../services/Interfaces/IUserService";
 import { injectable, inject, autoInjectable } from "tsyringe";
 import ResponseUtils from "../utils/response.utils";
@@ -11,7 +11,7 @@ export default class UserController {
     @inject("responseUtils") private responseUtils: ResponseUtils
   ) { }
 
-  async login(req: Request, res: Response) {
+  async login(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password } = req.body;
 
@@ -19,12 +19,12 @@ export default class UserController {
 
       this.responseUtils.sendSuccessResponse(res, token);
     } catch (error: any) {
-      console.log(error);
-      this.responseUtils.sendErrorResponse(res, error.message);
+      next(error);
+      
     }
   }
 
-  async register(req: Request, res: Response) {
+  async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password, username } = req.body;
 
@@ -32,43 +32,37 @@ export default class UserController {
 
       this.responseUtils.sendSuccessResponse(res, tokens, 201);
     } catch (error: any) {
-      console.log(error);
-      this.responseUtils.sendErrorResponse(res, error.message);
+      next(error);
     }
   }
 
-  async refreshToken(req: Request, res: Response) {
+  async refreshToken(req: Request, res: Response, next: NextFunction) {
     try {
       // Custom header name
       const refreshToken = req.header("x-refresh-token");
 
       if (!refreshToken)
-        return this.responseUtils.sendBadRequestResponse(
-          res,
-          "Invalid refresh token "
-        );
+        throw new Error("Invalid refresh token ");
 
       const token = await this.userService.refreshTokens(refreshToken);
 
       this.responseUtils.sendSuccessResponse(res, { token });
     } catch (error: any) {
-      this.responseUtils.sendErrorResponse(res, error.message);
+      next(error);
     }
   }
 
-  async logout(req: Request, res: Response) {
+  async logout(req: Request, res:   Response, next: NextFunction) {
     try {
       const token = req.header("Authorization")?.replace("Bearer ", "");
 
-      if (!token) {
-        return this.responseUtils.sendBadRequestResponse(res, "Invalid token");
-      }
+      if (!token) throw new Error("Invalid refresh token ");
 
       await this.userService.logout(token);
 
       this.responseUtils.sendSuccessResponse(res, "Logged out successfully");
     } catch (error: any) {
-      this.responseUtils.sendErrorResponse(res, error.message);
+      next(error);
     }
   }
 }

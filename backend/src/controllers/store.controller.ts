@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { inject, injectable } from "tsyringe";
 import IStoreService from "../services/Interfaces/IStoreService";
 import { TStoreCreate, TStoreUpdate, RequestWithUser } from "../types/types";
@@ -11,7 +11,7 @@ export default class StoreController {
         @inject("responseUtils") private responseUtils: ResponseUtils
     ) {}
 
-    async createStore(req: RequestWithUser, res: Response) {
+    async createStore(req: RequestWithUser, res: Response, next: NextFunction) {
         try {
             const storeData: TStoreCreate = {...req.body, owner_id: req.user.userId};
             
@@ -19,35 +19,31 @@ export default class StoreController {
             const newStore = await this.storeService.createStore(storeData);
             return this.responseUtils.sendSuccessResponse(res, newStore, 201);
         } catch (error:any) {
-            return this.responseUtils.sendErrorResponse(res, error.message, 500);
+            next(error);
         }
     }
 
-    async updateStore(req: Request, res: Response) {
+    async updateStore(req: Request, res: Response, next: NextFunction) {
         try {
             
 const storeData: TStoreUpdate = { ...req.body, id: req.params.id };
 
             const updatedStore = await this.storeService.updateStore( storeData);
-            if (!updatedStore) {
-                return this.responseUtils.sendNotFoundResponse(res, "Store not found");
-            }
+            
             return this.responseUtils.sendSuccessResponse(res, updatedStore);
         } catch (error:any) {
-            return this.responseUtils.sendErrorResponse(res, error.message, 500);
+            next(error);
         }
     }
 
-    async getStoreById(req: Request, res: Response) {
+    async getStoreById(req: Request, res: Response, next: NextFunction) {
         try {
             const storeId = req.params.id;
-            const store = await this.storeService.getStoreById(storeId);
-            if (!store) {
-                return this.responseUtils.sendNotFoundResponse(res, "Store not found");
-            }
+            const store = await this.storeService.getStoreByIdWithProducts(storeId);
+           
             return this.responseUtils.sendSuccessResponse(res, store);
         } catch (error:any) {
-            return this.responseUtils.sendErrorResponse(res, error.message, 500);
+            next(error);
         }
     }
 } 
