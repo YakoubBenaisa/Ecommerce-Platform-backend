@@ -2,7 +2,9 @@ import "reflect-metadata";
 import express, { Application, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import routes from "./routes";
-
+import {container} from "./config/container";
+import ResponseUtils from "./utils/response.utils";
+import GlobalErrorHandler from "./middlewares/errors.middlware";
 
 const app: Application = express();
 
@@ -17,12 +19,20 @@ app.use("/api/v1", routes);
 
 
 
-// Handle 404 - Route not found
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.status(404).json({
-    status: "error",
-    message: "Route not found"
-  });
+// ======================
+// 404 Handler
+// ======================
+app.use('*', (req, res, next) => {
+  const responseUtils = container.resolve(ResponseUtils);
+  responseUtils.sendNotFoundResponse(res, 'Endpoint not found');
+});
+
+// ======================
+// Global Error Handler
+// ======================
+const globalErrorHandler = container.resolve(GlobalErrorHandler);
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  globalErrorHandler.handle(err, req, res, next);
 });
 
 // Start the server
