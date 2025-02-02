@@ -13,7 +13,7 @@ export default class UserRepository implements IUserRepository {
   }
 
   async findById(id: string) {
-    const user = await this.prisma.user.findUnique({
+    return this.prisma.user.findUnique({
       where: { id },
       include: {
         store: {
@@ -24,9 +24,8 @@ export default class UserRepository implements IUserRepository {
       },
     });
 
-    if (!user) throw new NotFoundError("User");
-
-    return user;
+    
+    
   }
 
   async createUser(userData: {
@@ -34,14 +33,14 @@ export default class UserRepository implements IUserRepository {
     password_hash: string;
     username: string;
   }) {
-    const user = await this.prisma.user.create({
+    return this.prisma.user.create({
       data: userData,
     });
-    return user;
+    
   }
 
   async findByEmail(email: string) {
-    const user = await this.prisma.user.findUnique({
+    return this.prisma.user.findUnique({
       where: { email },
       include: {
         store: {
@@ -53,6 +52,6 @@ export default class UserRepository implements IUserRepository {
     });
 
    
-    return user;
+  
   }
 }

@@ -3,6 +3,7 @@ import IStoreRepository from "./interfaces/IStoreRepository";
 import { TStoreUpdate, TStoreWithProducts, TStoreCreate } from "../types/types";
 import db from "../config/db";
 import { PrismaClient, Store } from "@prisma/client";
+import { AppError, ConflictError, NotFoundError } from "../types/errors";
 
 @injectable()
 export default class StoreRepository implements IStoreRepository {
@@ -13,33 +14,33 @@ export default class StoreRepository implements IStoreRepository {
   }
 
   async create(storeData: TStoreCreate) {
+
     // Check if the user already owns a store
     const existingStore = await this.prisma.store.findUnique({
         where: { owner_id: storeData.owner_id },
-    });
+    }); 
 
-    if (existingStore) {
-        throw new Error("This user already owns a store.");
-    }
+    if (existingStore) 
+        throw new ConflictError("This user already owns a store.");
+    
 
     // Create new store if the user doesn't have one
-    const store = await this.prisma.store.create({
+    return this.prisma.store.create({
         data: storeData,
     });
 
-    return store;
+    
 }
 
 
   async update(storeData: TStoreUpdate) {
-    const store = await this.prisma.store.update({
+    return this.prisma.store.update({
       where: { id: storeData.id },
       data: storeData,
     });
-    return store;
   }
 
-  async getStoreById(id: string) {
+  async getStoreByIdWithProducts(id: string) {
     const store = await this.prisma.store.findUnique({
       where: { id },
       include: {
@@ -57,6 +58,19 @@ export default class StoreRepository implements IStoreRepository {
         },
       },
     });
+
+
+  
+  
+    
     return store as TStoreWithProducts | null;
   }
-}
+
+
+  async getStoreByName(name: string) {
+    return this.prisma.store.findFirst({
+      where: { name },
+    });
+    
+  }
+} 

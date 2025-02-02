@@ -12,13 +12,13 @@ export default class ProductRepository implements IProductRepository {
   constructor(@inject("db") private prismaService: db) {
     this.prisma = prismaService.getClient();
   }
-  async create(data: TProductCreate): Promise<Product> {
+  async create(data: TProductCreate) {
     return this.prisma.product.create({
       data,
     });
   }
 
-  async update(data: TProductUpdate): Promise<Product> {
+  async update(data: TProductUpdate) {
    
       const { id, ...updateData } = data;
       
@@ -29,21 +29,18 @@ export default class ProductRepository implements IProductRepository {
    
   }
 
-  async delete(id: string): Promise<Product> {
-    try {
+  async delete(id: string) {
+    
       return await this.prisma.product.delete({
         where: { id },
       });
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-        throw new NotFoundError("Product", id);
-      }
-      throw error;
-    }
+   
   }
 
-  async findById(id: string): Promise<TProductWithCategory> {
-    const product = await this.prisma.product.findUnique({
+
+  async findById(id: string) {
+
+    const product = await this.prisma.product.findFirst({
       where: { id },
       include: { category: true },
     });
@@ -53,18 +50,15 @@ export default class ProductRepository implements IProductRepository {
   }
 
   async findByStoreId(store_id: string) {
-    const products = await this.prisma.product.findMany({
+    return  this.prisma.product.findMany({
       where: { store_id },
       include: { category: true },
       orderBy: { created_at: 'desc' },
     });
-    if (!products || products.length === 0)
-     return null;
-
-    return products;
+    
   }
 
-  async findByCategoryId(category_id: string): Promise<TProductWithCategory[]> {
+  async findByCategoryId(category_id: string) {
     return this.prisma.product.findMany({
       where: { category_id },
       include: { category: true },
