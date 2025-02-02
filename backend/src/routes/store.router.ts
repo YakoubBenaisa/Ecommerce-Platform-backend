@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { container } from "../config/container";
 import StoreController from "../controllers/store.controller";
 import authMiddleware from "../middlewares/auth.middlware";
@@ -16,8 +16,8 @@ storeRouter.post(
   authMiddleware,
   validateRequest(storeCreateSchema),
 
-  async (req: Request, res: Response): Promise<any> =>
-    await storeController.createStore(req, res)
+  async (req: Request, res: Response, next: NextFunction): Promise<any> =>
+    await storeController.createStore(req, res, next)
 );
 
 storeRouter.put(
@@ -25,14 +25,14 @@ storeRouter.put(
   authMiddleware,
   validateRequest(storeUpdateSchema),
 
-  async (req: Request, res: Response): Promise<any> =>
-    await storeController.updateStore(req, res)
+  async (req: Request, res: Response, next: NextFunction): Promise<any> =>
+    await storeController.updateStore(req, res, next)
 );
 
 storeRouter.get(
   "/:id",
-  async (req: Request, res: Response): Promise<any> =>
-    await storeController.getStoreById(req, res)
+  async (req: Request, res: Response, next: NextFunction): Promise<any> =>
+    await storeController.getStoreById(req, res, next)
 );
 
 export default storeRouter;

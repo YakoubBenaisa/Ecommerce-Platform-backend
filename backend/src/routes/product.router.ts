@@ -1,4 +1,4 @@
-import { Router } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { container } from "../config/container";
 import ProductController from "../controllers/product.controller";
 import { validateRequest } from "../middlewares/RequestValidation.middlware";
@@ -23,30 +23,32 @@ router.post(
   imagesMiddleware,
   validateRequest(createProductSchema),
   
-  async (req, res): Promise<any> => await productController.create(req, res)
+  async (req, res, next: NextFunction) => await productController.create(req, res, next)
 );
 
 router.put(
   "/:id",
   authMiddleware,
+  imagesMiddleware,
   validateRequest(updateProductSchema),
-  async (req, res): Promise<any> => await productController.update(req, res)
+  async (req, res, next: NextFunction) => await productController.update(req, res, next)
 );
 
 router.delete(
   "/:id",
   authMiddleware,
-  async (req, res): Promise<any> => await productController.delete(req, res)
+  async (req, res, next: NextFunction) => await productController.delete(req, res, next)
 );
 
 router.get(
   "/:id",
-  async (req, res): Promise<any> => await productController.getById(req, res)
+  async (req, res, next: NextFunction) => await productController.getById(req, res, next)
 );
 
 router.get(
   "/stores/:storeId/products",
-  async (req, res): Promise<any> => await productController.getByStoreId(req, res)
+  async (req, res, next: NextFunction) =>
+    await productController.getByStoreId(req, res, next)
 );
 
 export default router; 

@@ -1,4 +1,4 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { container } from "../config/container";
 import UserController from "../controllers/user.controller";
 import { validateRequest } from "../middlewares/RequestValidation.middlware";
@@ -14,27 +14,28 @@ const userController = container.resolve(UserController);
 userRouter.post(
   "/login",
   validateRequest(userLoginSchema),
-  async (req: Request, res: Response) => {
-    await userController.login(req, res);
+  async (req: Request, res: Response, next: NextFunction) => {
+    await userController.login(req, res, next);
   }
 );
 userRouter.post(
   "/register",
   validateRequest(userRegistrationSchema),
-  async (req: Request, res: Response) => await userController.register(req, res)
+  async (req: Request, res: Response, next: NextFunction) =>
+    await userController.register(req, res, next)
 );
 
 userRouter.post(
   "/refresh-token",
-  async (req: Request, res: Response): Promise<any> =>
-    await userController.refreshToken(req, res)
+  async (req: Request, res: Response, next: NextFunction): Promise<any> =>
+    await userController.refreshToken(req, res, next)
 );
 
 userRouter.post(
   "/logout",
   authMiddleware,
-  async (req: Request, res: Response): Promise<any> =>
-    await userController.logout(req, res)
+  async (req: Request, res: Response, next: NextFunction): Promise<any> =>
+    await userController.logout(req, res, next)
 );
 
 export default userRouter;
