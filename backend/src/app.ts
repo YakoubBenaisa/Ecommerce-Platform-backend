@@ -31,12 +31,12 @@ app.use('*', (req, res, next) => {
 // Global Error Handler
 // ======================
 const globalErrorHandler = container.resolve(GlobalErrorHandler);
-app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use(async (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
   globalErrorHandler.handle(err, req, res, next);
 });
 
 // Start the server
-const PORT = process.env.PORT || 3003;
+const PORT = process.env.PORT || 3005;
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
 });

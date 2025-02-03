@@ -20,9 +20,10 @@ export default class GlobalErrorHandler {
   constructor(@inject(ResponseUtils) private responseUtils: ResponseUtils) {}
 
   handle(error: Error, req: Request, res: Response, next: NextFunction) {
+    console.error(`[${new Date().toISOString()}] Error:`, error);
     if (res.headersSent) return next(error);
 
-    console.error(`[${new Date().toISOString()}] Error:`, error);
+    
 
     
    

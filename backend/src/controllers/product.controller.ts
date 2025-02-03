@@ -18,8 +18,8 @@ export default class ProductController {
         try {
              
             
-            req.body = createProductSchema.parse(req.body);
-
+            req.body.price = parseFloat(req.body.price);
+            req.body.inventory_count = parseInt(req.body.inventory_count);
             const productData: TProductCreate = { ...req.body, store_id: req.user.storeId };
            
             
@@ -34,7 +34,7 @@ export default class ProductController {
     async update(req: RequestWithUser, res: Response, next: NextFunction): Promise<any>{
         try {
             const productData: TProductUpdate = { ...req.body, id: req.params.id, store_id: req.user.storeId };
-            console.log(productData);
+           
             const updatedProduct = await this.productService.update(productData);
             return this.responseUtils.sendSuccessResponse(res, updatedProduct);
         } catch (error: any) {
@@ -46,7 +46,7 @@ export default class ProductController {
     async delete(req: Request, res: Response, next: NextFunction): Promise<any>{
         try {
             const productId = req.params.id;
-            console.log(productId);
+          
             await this.productService.delete(productId);
             return this.responseUtils.sendSuccessNoDataResponse(res, "Product deleted successfully");
         } catch (error: any) {
@@ -76,6 +76,9 @@ export default class ProductController {
         }
     }
 
+
+
+  
     
 
    

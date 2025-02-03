@@ -7,11 +7,13 @@ import {
   NotFoundError, 
   InternalServerError 
 } from "../types/errors";
+import ImageUtils from "../utils/images.utils";
 
 @injectable()
 export default class ProductService implements IProductService {
   constructor(
-    @inject("IProductRepository") private productRepository: IProductRepository
+    @inject("IProductRepository") private productRepository: IProductRepository,
+    @inject("imageUtils") private imagesHandler: ImageUtils
   ) {}
 
   async create(data: TProductCreate) {
@@ -26,6 +28,7 @@ export default class ProductService implements IProductService {
   async update(data: TProductUpdate) {
     try {
       const product = await this.findById(data.id);
+      
      
 
       return await this.productRepository.update(data);
@@ -41,6 +44,9 @@ export default class ProductService implements IProductService {
   async delete(id: string) {
     try {
       const product = await this.findById(id);
+
+
+      await this.imagesHandler.deleteImage(product.images);
      
       return await this.productRepository.delete(id);
 
@@ -116,4 +122,6 @@ export default class ProductService implements IProductService {
       throw new InternalServerError("Failed to check inventory");
     }
   }
+
+  
 }
