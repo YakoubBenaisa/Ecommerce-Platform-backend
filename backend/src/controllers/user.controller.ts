@@ -46,7 +46,7 @@ export default class UserController {
 
       const token = await this.userService.refreshTokens(refreshToken);
 
-      this.responseUtils.sendSuccessResponse(res, { token });
+      this.responseUtils.sendSuccessResponse(res,  token );
     } catch (error: any) {
       next(error);
     }

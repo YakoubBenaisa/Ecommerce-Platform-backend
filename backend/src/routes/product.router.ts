@@ -59,11 +59,4 @@ export default router;
 
 
 
-           src/app.ts
-           src/controllers/product.controller.ts
-          
-           src/middlewares/errors.middlware.ts
-           src/routes/product.router.ts
-           src/services/product.service.ts
-           
-           src/utils/images.utils.ts
+         

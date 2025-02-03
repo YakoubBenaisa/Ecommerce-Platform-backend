@@ -28,7 +28,7 @@ try{
       username,
     });
 
-    console.log(user);
+  
 
     const accessToken = this.jwt.generateAccessToken(
       user.id,

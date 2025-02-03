@@ -42,9 +42,9 @@ export type TProductWithCategory = Prisma.ProductGetPayload<{
 
 
 
-// Ensure 'images' is typed correctly to match Prisma's expected type
+
 export type TProductCreate = Omit<Prisma.ProductCreateInput, "id" | "created_at" | "updated_at"> & {
-  images?: Prisma.InputJsonValue | null;  // Correct type for 'images'
+  images?: Prisma.InputJsonValue | null;  
 };
 
 
