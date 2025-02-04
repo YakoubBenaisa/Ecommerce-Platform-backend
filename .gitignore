@@ -53,14 +53,13 @@ docs/s.svg
 docs/useCaseDiagram.mdj
 # Ignore the backend/prompt2 directory
 backend/prompt2
-backend/prompt
+backend/prompt.txt
 backend/prompt2/
 
 # Ignore the specific file create_product.ts in backend/src
 backend/src/create_product.ts
 
-# Ignore everything under backend/src/validations directory
-backend/src/validations/
+
 
 # Ignore the uploads directory
 uploads/
