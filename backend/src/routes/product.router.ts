@@ -23,7 +23,7 @@ router.post(
   imagesMiddleware,
   validateRequest(createProductSchema),
   
-  async (req, res, next: NextFunction) => await productController.create(req, res, next)
+   (req, res, next: NextFunction) =>  productController.create(req, res, next)
 );
 
 router.put(
@@ -31,24 +31,24 @@ router.put(
   authMiddleware,
   imagesMiddleware,
   validateRequest(updateProductSchema),
-  async (req, res, next: NextFunction) => await productController.update(req, res, next)
+   (req, res, next: NextFunction) =>  productController.update(req, res, next)
 );
 
 router.delete(
   "/:id",
   authMiddleware,
-  async (req, res, next: NextFunction) => await productController.delete(req, res, next)
+   (req, res, next: NextFunction) =>  productController.delete(req, res, next)
 );
 
 router.get(
   "/:id",
-  async (req, res, next: NextFunction) => await productController.getById(req, res, next)
+   (req, res, next: NextFunction) =>  productController.getById(req, res, next)
 );
 
 router.get(
   "/stores/:storeId/products",
-  async (req, res, next: NextFunction) =>
-    await productController.getByStoreId(req, res, next)
+   (req, res, next: NextFunction) =>
+     productController.getByStoreId(req, res, next)
 );
 
 router.get("/images/:imageName", imageUtils.getImage);
