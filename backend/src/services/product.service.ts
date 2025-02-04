@@ -8,6 +8,9 @@ import {
   InternalServerError 
 } from "../types/errors";
 import ImageUtils from "../utils/images.utils";
+import { Prisma } from '@prisma/client';
+import { handlePrismaError } from "../utils/handlePrismaErrors";
+
 
 @injectable()
 export default class ProductService implements IProductService {
@@ -20,39 +23,43 @@ export default class ProductService implements IProductService {
     try {
       return await this.productRepository.create(data);
     } catch (error) {
-      
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        handlePrismaError(error, { resource: 'Product' });
+      }
       throw new InternalServerError("Failed to create product");
     }
   }
 
   async update(data: TProductUpdate) {
     try {
-      const product = await this.findById(data.id);
+     
       
      
 
       return await this.productRepository.update(data);
     } catch (error) {
-      if (error instanceof NotFoundError) {
-        throw error;
-      }
-     
+    
+      // If a Prisma error occurs, use the helper.
+      if (error instanceof Prisma.PrismaClientKnownRequestError) 
+        handlePrismaError(error, { resource: 'Product' });
+      
       throw new InternalServerError("Failed to update product");
     }
   }
 
   async delete(id: string) {
     try {
-      const product = await this.findById(id);
+     
 
-
+const product = await this.productRepository.delete(id);
       await this.imagesHandler.deleteImage(product.images);
      
-      return await this.productRepository.delete(id);
+      return product;
 
     } catch (error) {
-      if (error instanceof NotFoundError) 
-        throw error;
+      if (error instanceof Prisma.PrismaClientKnownRequestError) 
+        handlePrismaError(error, { resource: 'Product' });
+      
       
       throw new InternalServerError("Failed to delete product");
     }
@@ -60,24 +67,25 @@ export default class ProductService implements IProductService {
 
   async findById(id: string) {
     try {
-      const product = await this.productRepository.findById(id);
-      if (!product) 
-        throw new NotFoundError(`Product`);
+      return this.productRepository.findById(id);
       
-      return product;
-    } catch (error) {
-      if (error instanceof NotFoundError) {
-        throw error;
-      }
-      throw new InternalServerError("Failed to find product");
-    }
+    }catch (error) {
+      
+    
+    if (error instanceof Prisma.PrismaClientKnownRequestError) 
+      handlePrismaError(error, { resource: 'Product', id });
+    
+    throw new InternalServerError("Failed to find product");
+  }
   }
 
   async findByStoreId(store_id: string) {
     try {
-      return this.productRepository.findByStoreId(store_id);
-      
+      return await this.productRepository.findByStoreId(store_id);
     } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        handlePrismaError(error, { resource: 'Product', id: store_id });
+      }
       throw new InternalServerError("Failed to retrieve store products");
     }
   }
@@ -90,9 +98,11 @@ export default class ProductService implements IProductService {
       }
       return products;
     } catch (error) {
-      if (error instanceof NotFoundError) {
+      if (error instanceof NotFoundError) 
         throw error;
-      }
+      if (error instanceof Prisma.PrismaClientKnownRequestError) 
+        handlePrismaError(error, { resource: 'Product', id: category_id });
+      
       throw new InternalServerError("Failed to retrieve category products");
     }
   }
@@ -119,9 +129,12 @@ export default class ProductService implements IProductService {
       if (error instanceof NotFoundError || error instanceof ConflictError) {
         throw error;
       }
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        handlePrismaError(error, { resource: 'Product' });
+      }
       throw new InternalServerError("Failed to check inventory");
     }
   }
 
-  
+
 }

@@ -10,7 +10,7 @@ export const validateRequest =
   (schema: ZodSchema) =>
   (req: Request, res: Response, next: NextFunction): void => {
     try {
-     console.log(req.body)
+    
      
      
 

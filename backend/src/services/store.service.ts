@@ -8,6 +8,8 @@ import {
   InternalServerError,
   BadRequestError
 } from "../types/errors";
+import { Prisma } from '@prisma/client';
+import { handlePrismaError } from "../utils/handlePrismaErrors";
 
 @injectable()
 export default class StoreService implements IStoreService {
@@ -39,14 +41,15 @@ export default class StoreService implements IStoreService {
     
      
 
-      const store = await this.storeRepository.update(storeData);
-      if(!store) 
-        throw new NotFoundError("Store");
-      return store;
+      return  this.storeRepository.update(storeData);
+     
+    
     } catch (error) {
-      if (error instanceof NotFoundError ) {
-        throw error;
-      }
+     
+     
+      if (error instanceof Prisma.PrismaClientKnownRequestError) 
+        handlePrismaError(error, { resource: "Store", id: storeData.id });
+      
       throw new InternalServerError("Failed to update store");
     }
   }
@@ -55,14 +58,13 @@ export default class StoreService implements IStoreService {
     try {
    
 
-      const store = await this.storeRepository.getStoreByIdWithProducts(id);
-      if (!store) 
-        throw new NotFoundError("Store");
-      
-      return store;
+      return this.storeRepository.getStoreByIdWithProducts(id);
+     
     } catch (error) {
-      if (error instanceof NotFoundError ) 
-        throw error;
+    
+      
+      if (error instanceof Prisma.PrismaClientKnownRequestError) 
+        handlePrismaError(error, { resource: "Store", id });
       
       throw new InternalServerError("Failed to retrieve store");
     }
