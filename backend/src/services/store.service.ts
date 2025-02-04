@@ -61,7 +61,7 @@ export default class StoreService implements IStoreService {
       return this.storeRepository.getStoreByIdWithProducts(id);
      
     } catch (error) {
-    
+    console.log(error);
       
       if (error instanceof Prisma.PrismaClientKnownRequestError) 
         handlePrismaError(error, { resource: "Store", id });
