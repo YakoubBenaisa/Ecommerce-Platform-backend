@@ -19,6 +19,14 @@ import IProductRepository from "../repositories/interfaces/IProductRepository";
 import ProductRepository from "../repositories/product.repository";
 import ImageUtils from "../utils/images.utils";
 import  GlobalErrorHandler  from "../middlewares/errors.middlware";
+import ICategoryService from "../services/Interfaces/ICategoryService";
+import CategoryService from "../services/category.service";
+import ICategoryRepository from "../repositories/interfaces/ICategoryRepository";
+import CategoryRepository from "../repositories/category.repository";
+import ChargiliAccountRepository from "../repositories/chargiliAccount.repository";
+import ChargiliAccountService from "../services/chargiliAccount.service";
+import IChargiliAccountService from "../services/Interfaces/IChargiliAccountService";
+import IChargiliAccountRepository from "../repositories/interfaces/IChargiliAccountRepository";
 
 
 
@@ -74,6 +82,25 @@ container.register<IProductRepository>("IProductRepository", {
 
 container.register<IProductService>("IProductService", {
   useClass: ProductService,
+});
+
+//_________category module _____________
+// Register the repository
+container.register<ICategoryRepository>("ICategoryRepository", {
+  useClass: CategoryRepository,
+});
+
+// Register the service
+container.register<ICategoryService>("ICategoryService", {
+  useClass: CategoryService,
+});
+
+//_________Chargili Account module _____________
+container.register<IChargiliAccountRepository>("IChargiliAccountRepository", {
+  useClass: ChargiliAccountRepository,
+});
+container.register<IChargiliAccountService>("IChargiliAccountService", {
+  useClass: ChargiliAccountService,
 });
 
 

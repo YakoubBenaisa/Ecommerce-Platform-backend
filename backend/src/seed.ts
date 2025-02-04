@@ -9,8 +9,8 @@ async function main() {
   // Create a user
   const user = await prisma.user.create({
     data: {
-      username: 'store_owner',
-      email: 'owner@example.com',
+      username: 'store_ownnnner',
+      email: 'owner@exampppppple.com',
       password_hash: password_hash,
     },
   });
@@ -51,6 +51,42 @@ async function main() {
         category_id: (await prisma.category.findFirst({ where: { name: 'Electronics' } }))!.id,
         inventory_count: 50,
         images: ['1738443877695-565753061.png', '1738443877695-565753061.png'],
+      },
+      {
+        store_id: store.id,
+        name: 'T-Shirt',
+        description: 'Cotton t-shirt',
+        price: 29.99,
+        category_id: (await prisma.category.findFirst({ where: { name: 'Clothing' } }))!.id,
+        inventory_count: 100,
+        images: ['1738443877695-565753061.png'],
+      },
+      {
+        store_id: store.id,
+        name: 'T-Shirt',
+        description: 'Cotton t-shirt',
+        price: 29.99,
+        category_id: (await prisma.category.findFirst({ where: { name: 'Clothing' } }))!.id,
+        inventory_count: 100,
+        images: ['1738443877695-565753061.png'],
+      },
+      {
+        store_id: store.id,
+        name: 'T-Shirt',
+        description: 'Cotton t-shirt',
+        price: 29.99,
+        category_id: (await prisma.category.findFirst({ where: { name: 'Clothing' } }))!.id,
+        inventory_count: 100,
+        images: ['1738443877695-565753061.png'],
+      },
+      {
+        store_id: store.id,
+        name: 'T-Shirt',
+        description: 'Cotton t-shirt',
+        price: 29.99,
+        category_id: (await prisma.category.findFirst({ where: { name: 'Clothing' } }))!.id,
+        inventory_count: 100,
+        images: ['1738443877695-565753061.png'],
       },
       {
         store_id: store.id,

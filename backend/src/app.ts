@@ -5,6 +5,7 @@ import routes from "./routes";
 import {container} from "./config/container";
 import ResponseUtils from "./utils/response.utils";
 import GlobalErrorHandler from "./middlewares/errors.middlware";
+import listEndpoints from "express-list-endpoints";
 
 const app: Application = express();
 
@@ -31,9 +32,11 @@ app.use('*', (req, res, next) => {
 // Global Error Handler
 // ======================
 const globalErrorHandler = container.resolve(GlobalErrorHandler);
-app.use(async (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use( (err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
   globalErrorHandler.handle(err, req, res, next);
 });
+
+ console.log(listEndpoints(app));
 
 // Start the server
 const PORT = process.env.PORT || 3005;
