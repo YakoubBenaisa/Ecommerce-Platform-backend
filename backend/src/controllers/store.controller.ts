@@ -9,7 +9,9 @@ export default class StoreController {
     constructor(
         @inject("IStoreService") private storeService: IStoreService,
         @inject("responseUtils") private responseUtils: ResponseUtils
-    ) {}
+    ) {
+        console.log("StoreController created");
+    }
 
     async createStore(req: RequestWithUser, res: Response, next: NextFunction) {
         try {
@@ -17,7 +19,7 @@ export default class StoreController {
             
             
             const newStore = await this.storeService.createStore(storeData);
-            return this.responseUtils.sendSuccessResponse(res, newStore, 201);
+             this.responseUtils.sendSuccessResponse(res, newStore, 201);
         } catch (error:any) {
             next(error);
         }
@@ -30,7 +32,7 @@ const storeData: TStoreUpdate = { ...req.body, id: req.params.id };
 
             const updatedStore = await this.storeService.updateStore( storeData);
             
-            return this.responseUtils.sendSuccessResponse(res, updatedStore);
+             this.responseUtils.sendSuccessResponse(res, updatedStore);
         } catch (error:any) {
             next(error);
         }
@@ -41,7 +43,7 @@ const storeData: TStoreUpdate = { ...req.body, id: req.params.id };
             const storeId = req.params.id;
             const store = await this.storeService.getStoreByIdWithProducts(storeId);
            
-            return this.responseUtils.sendSuccessResponse(res, store);
+             this.responseUtils.sendSuccessResponse(res, store);
         } catch (error:any) {
             next(error);
         }

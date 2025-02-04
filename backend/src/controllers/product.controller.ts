@@ -14,7 +14,7 @@ export default class ProductController {
         @inject("responseUtils") private responseUtils: ResponseUtils
     ) {}
 
-    async create(req: RequestWithUser, res: Response, next: NextFunction): Promise<any> {
+    async create(req: RequestWithUser, res: Response, next: NextFunction) {
         try {
              
             
@@ -24,53 +24,53 @@ export default class ProductController {
            
             
             const newProduct = await this.productService.create(productData);
-            return this.responseUtils.sendSuccessResponse(res, newProduct, 201);
+             this.responseUtils.sendSuccessResponse(res, newProduct, 201);
         } catch (error: any) {
           
             next(error);
         }
     }
 
-    async update(req: RequestWithUser, res: Response, next: NextFunction): Promise<any>{
+    async update(req: RequestWithUser, res: Response, next: NextFunction){
         try {
             const productData: TProductUpdate = { ...req.body, id: req.params.id, store_id: req.user.storeId };
            
             const updatedProduct = await this.productService.update(productData);
-            return this.responseUtils.sendSuccessResponse(res, updatedProduct);
+             this.responseUtils.sendSuccessResponse(res, updatedProduct);
         } catch (error: any) {
           
              next(error);
         }
     }
 
-    async delete(req: Request, res: Response, next: NextFunction): Promise<any>{
+    async delete(req: Request, res: Response, next: NextFunction){
         try {
             const productId = req.params.id;
           
             await this.productService.delete(productId);
-            return this.responseUtils.sendSuccessNoDataResponse(res, "Product deleted successfully");
+             this.responseUtils.sendSuccessNoDataResponse(res, "Product deleted successfully");
         } catch (error: any) {
           
              next(error);
         }
     }
 
-    async getById(req: Request, res: Response, next: NextFunction): Promise<any>{
+    async getById(req: Request, res: Response, next: NextFunction){
         try {
             const productId = req.params.id;
             const product = await this.productService.findById(productId);
-            return this.responseUtils.sendSuccessResponse(res, product);
+             this.responseUtils.sendSuccessResponse(res, product);
         } catch (error: any) {
           
              next(error);
         }
     }
 
-    async getByStoreId(req: Request, res: Response, next: NextFunction): Promise<any>{
+    async getByStoreId(req: Request, res: Response, next: NextFunction){
         try {
             const storeId = req.params.storeId;
             const products = await this.productService.findByStoreId(storeId);
-            return this.responseUtils.sendSuccessResponse(res, products);
+             this.responseUtils.sendSuccessResponse(res, products);
         } catch (error: any) {
              next(error);
         }
