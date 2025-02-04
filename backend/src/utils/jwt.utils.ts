@@ -66,6 +66,7 @@ export default class JwtUtils {
       };
       return decoded;
     } catch {
+     
       throw new Error("Invalid token");
     }
   }

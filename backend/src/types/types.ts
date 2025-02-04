@@ -59,12 +59,16 @@ export type TProductUpdate = {
   store_id: string; // Keep store_id as required
 };
 
+//________________ Categoey types _______________________
+
+export type TCategoryCreate = Omit<Category, "id" | "created_at" | "updated_at">;
+
 
 //________________ MetaIntegration types _______________________
 
 export type TMetaIntegration = Omit<MetaIntegration, "id" | "store_id" | "created_at" | "updated_at">;
 //________________ types _______________________
 
-export type TChargiliAccount = Omit<ChargiliAccount, "id" | "store_id" | "created_at" | "updated_at">;
+export type TChargiliAccountCreate = Omit<ChargiliAccount, "id"  | "created_at" | "updated_at">;
 
 

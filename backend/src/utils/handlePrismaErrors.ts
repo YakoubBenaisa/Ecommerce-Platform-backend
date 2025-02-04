@@ -3,10 +3,10 @@ import { Prisma } from '@prisma/client';
 import { NotFoundError, InternalServerError } from '../types/errors';
 
 
-export function handlePrismaError(
+export async function handlePrismaError(
   error: unknown,
   context?: { resource?: string; id?: string }
-): never {
+): Promise<never> {
   if (error instanceof Prisma.PrismaClientKnownRequestError) {
     // Prisma error code P2025 indicates that a record was not found.
     if (error.code === 'P2025') {
