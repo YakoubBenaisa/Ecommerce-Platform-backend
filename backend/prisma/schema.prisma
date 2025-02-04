@@ -108,6 +108,8 @@ model Category {
   store_id String
   store    Store     @relation(fields: [store_id], references: [id], onDelete: Cascade)
   name     String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
   products Product[]
 }
 
@@ -137,6 +139,8 @@ model OrderItem {
   product    Product @relation(fields: [product_id], references: [id] , onDelete: Restrict)
   quantity   Int
   unit_price Decimal
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
   @@id([product_id , order_id])
 }
 
