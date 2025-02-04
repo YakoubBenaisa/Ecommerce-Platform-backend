@@ -1,0 +1,602 @@
+{
+	"info": {
+		"_postman_id": "64970044-c190-4fa8-a8d2-df63ff65ed5a",
+		"name": "E-commerce Platform",
+		"description": "Collection to test the authentication API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "36773225"
+	},
+	"item": [
+		{
+			"name": "Store",
+			"item": [
+				{
+					"name": "Create Store",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"My Store\",\n  \"description\": \"A great store for all your needs\"\n}"
+						},
+						"url": "{{baseUrl}}/stores"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Store",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Store Name\",\n  \"description\": \"Updated store description\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/stores/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stores",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "8e15b222-bed7-43ad-9437-7543832db2da",
+									"description": "Store ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Store by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/stores/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stores",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "8e15b222-bed7-43ad-9437-7543832db2da",
+									"description": "Store ID"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Product",
+			"item": [
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "test",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "123.125",
+									"type": "text"
+								},
+								{
+									"key": "inventory_count",
+									"value": "100",
+									"contentType": "",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": [
+										"/home/elmoatassim_billah/Pictures/monterey.png",
+										"/home/elmoatassim_billah/Pictures/blue-lotus2.png"
+									]
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Product",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "tessssst",
+									"type": "text"
+								},
+								{
+									"key": "images",
+									"type": "file",
+									"src": "/home/elmoatassim_billah/Pictures/monterey.png"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "021347ed-24b9-45af-bb67-695ccec81632",
+									"description": "Product ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Product",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/products/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "6782fcc1-28a8-4067-94d4-2f237714218d",
+									"description": "Product ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "34de211f-58be-49c2-aae4-460189a89e28",
+									"description": "Product ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Products by Store ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}products/stores/:storeId/products",
+							"host": [
+								"{{baseUrl}}products"
+							],
+							"path": [
+								"stores",
+								":storeId",
+								"products"
+							],
+							"variable": [
+								{
+									"key": "storeId",
+									"value": "8e15b222-bed7-43ad-9437-7543832db2da",
+									"description": "Store ID"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get image",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/images/:imageName",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								"images",
+								":imageName"
+							],
+							"variable": [
+								{
+									"key": "imageName",
+									"value": "1738615473069-832412139.png"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+			
+				{
+					"name": "Create Category",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Electronics\",\n  \"description\": \"All electronic items\"\n}"
+						},
+						"url": "{{baseUrl}}/stores/categories"
+					},
+					"response": []
+				},
+				{
+					"name": "List Categories",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/stores/:storeId/categories",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stores",
+								":storeId",
+								"categories"
+							],
+							"variable": [
+								{
+									"key": "storeId",
+									"value": "8e15b222-bed7-43ad-9437-7543832db2da"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Category",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": {
+							"raw": "{{baseUrl}}/stores/categories/:categoryId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"stores",
+								"categories",
+								":categoryId"
+							],
+							"variable": [
+								{
+									"key": "categoryId",
+									"value": "d3a8f7e2-458c-4879-ba32-9f7a5d63c491"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+			
+				{
+					"name": "Setup Payment",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"SECRET_KEY\": \"sk_test_1234567890\"\n}"
+						},
+						"url": "{{baseUrl}}/stores/payment-setup"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Payment Setup",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"url": "{{baseUrl}}/stores/payment-setup"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Payment Setup",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{accessToken}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"SECRET_KEY\": \"sk_test_0987654321\"\n}"
+						},
+						"url": "{{baseUrl}}/stores/payment-setup"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Product",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Test Product\",\n  \"price\": 100\n}"
+						},
+						"url": "{{baseUrl}}products"
+					}
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"test@mcnjdsnbcjdsjjjjjjjjjjjjjjjjjjjjjjjjjjjjexamppple.com\",\n  \"password\": \"password123\",\n  \"username\": \"testuser\"\n}\n"
+						},
+						"url": "{{baseUrl}}auth/register"
+					}
+				}
+			]
+	
+			},
+	
+		
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"owner@example.com\",\n  \"password\": \"password\",\n  \"username\": \"testuser\"\n}"
+				},
+				"url": "{{baseUrl}}/auth/login"
+			},
+			"response": []
+		},
+		{
+			"name": "Refresh Token",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "x-refresh-token",
+						"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiNGJmNGVmMi0yNzgxLTQwMWQtYmVkMi1iMzNkNjgyNWVhYTUiLCJlbWFpbCI6InRlc3RAbWNuamRzbmJjamRzampqampqampqampqampqampqamV4YW1wcHBsZS5jb20iLCJpYXQiOjE3Mzg1Njc1NTUsImV4cCI6MTczOTg2MzU1NX0.10kYS68-tbSSSrIrN4c7YHvc1YLtkF-ohJpr56w8RYM",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"refreshToken\": \"<your_refresh_token>\"\n}"
+				},
+				"url": "{{baseUrl}}/auth//refresh-token"
+			},
+			"response": []
+		},
+		{
+			"name": "Logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": {
+						"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJiNGJmNGVmMi0yNzgxLTQwMWQtYmVkMi1iMzNkNjgyNWVhYTUiLCJlbWFpbCI6InRlc3RAbWNuamRzbmJjamRzampqampqampqampqampqampqamV4YW1wcHBsZS5jb20iLCJzdG9yZUlkIjpudWxsLCJ1c2VybmFtZSI6InRlc3R1c2VyIiwiaWF0IjoxNzM4NTY3OTE5LCJleHAiOjE3Mzg2NTQzMTl9.4V3I7i2OpOf4UzimP5J-k39ju3CYWoShpQfzsoIdXrw"
+					}
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"<your_user_id>\"\n}"
+				},
+				"url": "{{baseUrl}}/auth/logout"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": {
+			"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwOGM3YmY2Zi04NjdkLTQzYTgtYWVkNC03NDllMmRiMTE2ZTIiLCJlbWFpbCI6Im93bmVyQGV4YW1wbGUuY29tIiwic3RvcmVJZCI6IjhlMTViMjIyLWJlZDctNDNhZC05NDM3LTc1NDM4MzJkYjJkYSIsInVzZXJuYW1lIjoic3RvcmVfb3duZXIiLCJpYXQiOjE3Mzg1NzExNjAsImV4cCI6MTczODY1NzU2MH0.oncmCSn02iAz-SNhHYfxRzj-tMzyNtrPbKDjB7judCo"
+		}
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3005/api/v1/",
+			"type": "string"
+		}
+	]
+}
