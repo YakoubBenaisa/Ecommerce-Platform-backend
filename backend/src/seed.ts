@@ -1,16 +1,15 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
 async function main() {
-
-    const password_hash = await bcrypt.hash('password', 10);
+  const password_hash = await bcrypt.hash("password", 10);
   // Create a user
   const user = await prisma.user.create({
     data: {
-      username: 'store_ownnnner',
-      email: 'owner@exampppppple.com',
+      username: "store_ownnnner",
+      email: "owner@exampppppple.com",
       password_hash: password_hash,
     },
   });
@@ -18,8 +17,8 @@ async function main() {
   // Create a store
   const store = await prisma.store.create({
     data: {
-      name: 'My Awesome Store',
-      description: 'Sample store for testing purposes',
+      name: "My Awesome Store",
+      description: "Sample store for testing purposes",
       owner_id: user.id,
       meta_integration_status: true,
       payment_setup_status: true,
@@ -31,11 +30,11 @@ async function main() {
     data: [
       {
         store_id: store.id,
-        name: 'Electronics',
+        name: "Electronics",
       },
       {
         store_id: store.id,
-        name: 'Clothing',
+        name: "Clothing",
       },
     ],
   });
@@ -45,57 +44,69 @@ async function main() {
     data: [
       {
         store_id: store.id,
-        name: 'Smartphone',
-        description: 'Latest model smartphone',
+        name: "Smartphone",
+        description: "Latest model smartphone",
         price: 599.99,
-        category_id: (await prisma.category.findFirst({ where: { name: 'Electronics' } }))!.id,
+        category_id: (await prisma.category.findFirst({
+          where: { name: "Electronics" },
+        }))!.id,
         inventory_count: 50,
-        images: ['1738443877695-565753061.png', '1738443877695-565753061.png'],
+        images: ["1738443877695-565753061.png", "1738443877695-565753061.png"],
       },
       {
         store_id: store.id,
-        name: 'T-Shirt',
-        description: 'Cotton t-shirt',
+        name: "T-Shirt",
+        description: "Cotton t-shirt",
         price: 29.99,
-        category_id: (await prisma.category.findFirst({ where: { name: 'Clothing' } }))!.id,
+        category_id: (await prisma.category.findFirst({
+          where: { name: "Clothing" },
+        }))!.id,
         inventory_count: 100,
-        images: ['1738443877695-565753061.png'],
+        images: ["1738443877695-565753061.png"],
       },
       {
         store_id: store.id,
-        name: 'T-Shirt',
-        description: 'Cotton t-shirt',
+        name: "T-Shirt",
+        description: "Cotton t-shirt",
         price: 29.99,
-        category_id: (await prisma.category.findFirst({ where: { name: 'Clothing' } }))!.id,
+        category_id: (await prisma.category.findFirst({
+          where: { name: "Clothing" },
+        }))!.id,
         inventory_count: 100,
-        images: ['1738443877695-565753061.png'],
+        images: ["1738443877695-565753061.png"],
       },
       {
         store_id: store.id,
-        name: 'T-Shirt',
-        description: 'Cotton t-shirt',
+        name: "T-Shirt",
+        description: "Cotton t-shirt",
         price: 29.99,
-        category_id: (await prisma.category.findFirst({ where: { name: 'Clothing' } }))!.id,
+        category_id: (await prisma.category.findFirst({
+          where: { name: "Clothing" },
+        }))!.id,
         inventory_count: 100,
-        images: ['1738443877695-565753061.png'],
+        images: ["1738443877695-565753061.png"],
       },
       {
         store_id: store.id,
-        name: 'T-Shirt',
-        description: 'Cotton t-shirt',
+        name: "T-Shirt",
+        description: "Cotton t-shirt",
         price: 29.99,
-        category_id: (await prisma.category.findFirst({ where: { name: 'Clothing' } }))!.id,
+        category_id: (await prisma.category.findFirst({
+          where: { name: "Clothing" },
+        }))!.id,
         inventory_count: 100,
-        images: ['1738443877695-565753061.png'],
+        images: ["1738443877695-565753061.png"],
       },
       {
         store_id: store.id,
-        name: 'T-Shirt',
-        description: 'Cotton t-shirt',
+        name: "T-Shirt",
+        description: "Cotton t-shirt",
         price: 29.99,
-        category_id: (await prisma.category.findFirst({ where: { name: 'Clothing' } }))!.id,
+        category_id: (await prisma.category.findFirst({
+          where: { name: "Clothing" },
+        }))!.id,
         inventory_count: 100,
-        images: ['1738443877695-565753061.png'],
+        images: ["1738443877695-565753061.png"],
       },
     ],
   });
@@ -103,9 +114,9 @@ async function main() {
   // Create a customer
   const customer = await prisma.customer.create({
     data: {
-      name: 'John Doe',
-      email: 'john@example.com',
-      phone: '+1234567890',
+      name: "John Doe",
+      email: "john@example.com",
+      phone: "+1234567890",
       store_id: store.id,
     },
   });
@@ -116,13 +127,13 @@ async function main() {
       store_id: store.id,
       customer_id: customer.id,
       total_amount: 629.98,
-      status: 'pending',
-      payment_method: 'cash_on_delivery',
-      order_source: 'platform',
+      status: "pending",
+      payment_method: "cash_on_delivery",
+      order_source: "platform",
       address: {
-        street: '123 Main St',
-        city: 'Anytown',
-        country: 'Country',
+        street: "123 Main St",
+        city: "Anytown",
+        country: "Country",
       },
     },
   });
@@ -132,13 +143,17 @@ async function main() {
     data: [
       {
         order_id: order.id,
-        product_id: (await prisma.product.findFirst({ where: { name: 'Smartphone' } }))!.id,
+        product_id: (await prisma.product.findFirst({
+          where: { name: "Smartphone" },
+        }))!.id,
         quantity: 1,
         unit_price: 599.99,
       },
       {
         order_id: order.id,
-        product_id: (await prisma.product.findFirst({ where: { name: 'T-Shirt' } }))!.id,
+        product_id: (await prisma.product.findFirst({
+          where: { name: "T-Shirt" },
+        }))!.id,
         quantity: 1,
         unit_price: 29.99,
       },
@@ -150,8 +165,8 @@ async function main() {
     data: {
       order_id: order.id,
       amount: 629.98,
-      payment_method: 'cash_on_delivery',
-      status: 'pending',
+      payment_method: "cash_on_delivery",
+      status: "pending",
       gateway_response: {},
     },
   });
@@ -160,13 +175,9 @@ async function main() {
   const metaIntegration = await prisma.metaIntegration.create({
     data: {
       store_id: store.id,
-      page_id: '123456789',
-      app_id: '987654321',
-      access_token: 'meta_access_token_here',
-      webhook_verify_token: 'verify_token_here',
-      webhook_url: 'https://example.com/webhook',
-      webhook_port: 3000,
-      webhook_token: 'webhook_token_here',
+      page_id: "123456789",
+      app_id: "987654321",
+      access_token: "meta_access_token_here",
     },
   });
 
@@ -174,11 +185,11 @@ async function main() {
   const chargiliAccount = await prisma.chargiliAccount.create({
     data: {
       store_id: store.id,
-      SECRET_KEY: 'chargili_secret_key_here',
+      SECRET_KEY: "chargili_secret_key_here",
     },
   });
 
-  console.log('Database seeded successfully!');
+  console.log("Database seeded successfully!");
 }
 
 main()

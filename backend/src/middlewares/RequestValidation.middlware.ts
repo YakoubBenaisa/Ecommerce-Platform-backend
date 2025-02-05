@@ -5,16 +5,12 @@ import ResponseUtils from "../utils/response.utils";
 
 const responseUtils = container.resolve(ResponseUtils);
 
-
 export const validateRequest =
   (schema: ZodSchema) =>
   (req: Request, res: Response, next: NextFunction): void => {
     try {
-    
-     
-     
-
-      schema.parse(req.body); 
+      const result = schema.safeParse(req.body);
+      req.body = result.data;
       next();
     } catch (error: any) {
       if (error instanceof ZodError) {
@@ -28,10 +24,10 @@ export const validateRequest =
         responseUtils.sendValidationError(
           res,
           "Validation failed",
-          formattedErrors 
+          formattedErrors,
         );
       } else {
-        next(error); 
+        next(error);
       }
     }
   };

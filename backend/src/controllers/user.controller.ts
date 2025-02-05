@@ -8,8 +8,8 @@ import "reflect-metadata";
 export default class UserController {
   constructor(
     @inject("IUserService") private userService: IUserService,
-    @inject("responseUtils") private responseUtils: ResponseUtils
-  ) { }
+    @inject("responseUtils") private responseUtils: ResponseUtils,
+  ) {}
 
   async login(req: Request, res: Response, next: NextFunction) {
     try {
@@ -20,7 +20,6 @@ export default class UserController {
       this.responseUtils.sendSuccessResponse(res, token);
     } catch (error: any) {
       next(error);
-      
     }
   }
 
@@ -41,18 +40,17 @@ export default class UserController {
       // Custom header name
       const refreshToken = req.header("x-refresh-token");
 
-      if (!refreshToken)
-        throw new Error("Invalid refresh token ");
+      if (!refreshToken) throw new Error("Invalid refresh token ");
 
       const token = await this.userService.refreshTokens(refreshToken);
 
-      this.responseUtils.sendSuccessResponse(res,  token );
+      this.responseUtils.sendSuccessResponse(res, token);
     } catch (error: any) {
       next(error);
     }
   }
 
-  async logout(req: Request, res:   Response, next: NextFunction) {
+  async logout(req: Request, res: Response, next: NextFunction) {
     try {
       const token = req.header("Authorization")?.replace("Bearer ", "");
 

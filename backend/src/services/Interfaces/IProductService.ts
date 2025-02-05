@@ -10,6 +10,6 @@ export default interface IProductService {
   findByCategoryId(category_id: string): Promise<Product[]>;
 
   CheckInventory(
-    inventoryData: { id: string; inventory_count: string }[]
-  ):Promise<boolean>;
+    inventoryData: { id: string; inventory_count: string }[],
+  ): Promise<boolean>;
 }

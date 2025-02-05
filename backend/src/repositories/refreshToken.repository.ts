@@ -4,17 +4,15 @@ import { inject, injectable } from "tsyringe";
 import { container } from "tsyringe";
 import db from "../config/db";
 
-
 @injectable()
 export default class RefreshTokenRepository implements IRefreshTokenRepository {
-
   private prisma: PrismaClient;
 
   constructor(@inject("db") private prismaService: db) {
     this.prisma = prismaService.getClient();
   }
   async create(user_id: string, token: string, expires_at: Date) {
-    return  this.prisma.refreshToken.upsert({
+    return this.prisma.refreshToken.upsert({
       where: {
         user_id, // Unique identifier to check for existing record
       },
@@ -33,19 +31,19 @@ export default class RefreshTokenRepository implements IRefreshTokenRepository {
   }
 
   async findByUserId(user_id: string) {
-    return  this.prisma.refreshToken.findUnique({
+    return this.prisma.refreshToken.findUnique({
       where: { user_id },
     });
   }
 
   async deleteByUserId(user_id: string) {
-    return  this.prisma.refreshToken.delete({
+    return this.prisma.refreshToken.delete({
       where: { user_id },
     });
   }
 
   async updateByUserId(user_id: string, newToken: string, newExpiresAt: Date) {
-    return  this.prisma.refreshToken.update({
+    return this.prisma.refreshToken.update({
       where: { user_id },
       data: {
         token: newToken,

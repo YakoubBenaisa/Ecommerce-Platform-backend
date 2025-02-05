@@ -1,6 +1,6 @@
-import { inject, singleton,injectable,scoped,Lifecycle } from 'tsyringe';
-import { Response } from 'express';
-import HttpStatusCode from './HttpStatusCode';
+import { inject, singleton, injectable, scoped, Lifecycle } from "tsyringe";
+import { Response } from "express";
+import HttpStatusCode from "./HttpStatusCode";
 
 interface SuccessResponse<T> {
   success: true;
@@ -17,13 +17,11 @@ interface ErrorResponse<T> {
 @singleton()
 @injectable()
 class ResponseUtils {
-
-          
   // Success response with data
   sendSuccessResponse<T>(
     res: Response,
     data: T,
-    status = HttpStatusCode.OK
+    status = HttpStatusCode.OK,
   ): Response<SuccessResponse<T>> {
     return res.status(status).json({ success: true, data });
   }
@@ -31,8 +29,8 @@ class ResponseUtils {
   // Success response without data (e.g., for delete operations)
   sendSuccessNoDataResponse(
     res: Response,
-    message = 'Operation successful',
-    status = HttpStatusCode.OK
+    message = "Operation successful",
+    status = HttpStatusCode.OK,
   ): Response<SuccessResponse<null>> {
     return res.status(status).json({ success: true, message });
   }
@@ -41,7 +39,7 @@ class ResponseUtils {
   sendErrorResponse<T>(
     res: Response,
     message: T,
-    status = HttpStatusCode.INTERNAL_SERVER_ERROR
+    status = HttpStatusCode.INTERNAL_SERVER_ERROR,
   ): Response<ErrorResponse<T>> {
     return res.status(status).json({ success: false, error: { message } });
   }
@@ -50,7 +48,7 @@ class ResponseUtils {
   sendNotFoundResponse<T>(
     res: Response,
     message: T,
-    status = HttpStatusCode.NOT_FOUND
+    status = HttpStatusCode.NOT_FOUND,
   ): Response<ErrorResponse<T>> {
     return res.status(status).json({ success: false, error: { message } });
   }
@@ -60,7 +58,7 @@ class ResponseUtils {
     res: Response,
     message: T,
     errors: any,
-    status = HttpStatusCode.BAD_REQUEST
+    status = HttpStatusCode.BAD_REQUEST,
   ): Response<ErrorResponse<T>> {
     return res.status(status).json({
       success: false,
@@ -74,8 +72,8 @@ class ResponseUtils {
   // Unauthorized response
   sendUnauthorizedResponse<T>(
     res: Response,
-    message = 'Unauthorized',
-    status = HttpStatusCode.UNAUTHORIZED
+    message = "Unauthorized",
+    status = HttpStatusCode.UNAUTHORIZED,
   ): Response<ErrorResponse<T>> {
     return res.status(status).json({ success: false, error: { message } });
   }
@@ -83,8 +81,8 @@ class ResponseUtils {
   // Forbidden response
   sendForbiddenResponse<T>(
     res: Response,
-    message = 'Forbidden',
-    status = HttpStatusCode.FORBIDDEN
+    message = "Forbidden",
+    status = HttpStatusCode.FORBIDDEN,
   ): Response<ErrorResponse<T>> {
     return res.status(status).json({ success: false, error: { message } });
   }
@@ -93,7 +91,7 @@ class ResponseUtils {
   sendBadRequestResponse<T>(
     res: Response,
     message: T,
-    status = HttpStatusCode.BAD_REQUEST
+    status = HttpStatusCode.BAD_REQUEST,
   ): Response<ErrorResponse<T>> {
     return res.status(status).json({ success: false, error: { message } });
   }

@@ -1,6 +1,5 @@
-
 import { injectable, inject } from "tsyringe";
-import  ICategoryRepository  from "./interfaces/ICategoryRepository";
+import ICategoryRepository from "./interfaces/ICategoryRepository";
 import { TCategoryCreate } from "../types/types";
 import { PrismaClient, Prisma } from "@prisma/client";
 import db from "../config/db";
@@ -13,7 +12,7 @@ export default class CategoryRepository implements ICategoryRepository {
     this.prisma = prismaService.getClient();
   }
 
-  async create(data: TCategoryCreate){
+  async create(data: TCategoryCreate) {
     return this.prisma.category.create({
       data,
     });
@@ -25,7 +24,7 @@ export default class CategoryRepository implements ICategoryRepository {
     });
   }
 
-  async delete(categoryId: string){
+  async delete(categoryId: string) {
     return this.prisma.category.delete({
       where: { id: categoryId },
     });

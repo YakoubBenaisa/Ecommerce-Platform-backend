@@ -23,9 +23,6 @@ export default class UserRepository implements IUserRepository {
         },
       },
     });
-
-    
-    
   }
 
   async createUser(userData: {
@@ -36,7 +33,6 @@ export default class UserRepository implements IUserRepository {
     return this.prisma.user.create({
       data: userData,
     });
-    
   }
 
   async findByEmail(email: string) {
@@ -50,8 +46,5 @@ export default class UserRepository implements IUserRepository {
         },
       },
     });
-
-   
-  
   }
 }

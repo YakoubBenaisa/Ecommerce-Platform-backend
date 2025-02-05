@@ -1,10 +1,15 @@
 import bcrypt from "bcryptjs";
 import IUserService from "./Interfaces/IUserService";
 import IUserRepository from "../repositories/interfaces/IUserRepository";
-import IRefreshTokenRepository from "../repositories/interfaces/IRefreshTokenInterface"; 
+import IRefreshTokenRepository from "../repositories/interfaces/IRefreshTokenInterface";
 import { inject, injectable } from "tsyringe";
 import JwtUtils from "../utils/jwt.utils";
-import { ConflictError, NotFoundError,InternalServerError,UnauthorizedError } from "../types/errors";
+import {
+  ConflictError,
+  NotFoundError,
+  InternalServerError,
+  UnauthorizedError,
+} from "../types/errors";
 
 @injectable()
 export class UserService implements IUserService {
@@ -12,81 +17,92 @@ export class UserService implements IUserService {
     @inject("IUserRepository") private userRepository: IUserRepository,
     @inject("IRefreshTokenRepository")
     private refreshTokenRepository: IRefreshTokenRepository,
-    @inject("jwt") private jwt: JwtUtils
-  ) { }
+    @inject("jwt") private jwt: JwtUtils,
+  ) {}
 
   async register(email: string, password: string, username: string) {
-try{
-    const existingUser = await this.userRepository.findByEmail(email);
-    if (existingUser) throw new ConflictError("User already exists");
+    try {
+      const existingUser = await this.userRepository.findByEmail(email);
+      if (existingUser) throw new ConflictError("User already exists");
 
-    const password_hash = await bcrypt.hash(password, 10);
+      const password_hash = await bcrypt.hash(password, 10);
 
-    const user = await this.userRepository.createUser({
-      email,
-      password_hash,
-      username,
-    });
+      const user = await this.userRepository.createUser({
+        email,
+        password_hash,
+        username,
+      });
 
-  
+      const accessToken = this.jwt.generateAccessToken(
+        user.id,
+        user.email,
+        null,
+        user.username,
+      );
+      const refreshToken = this.jwt.generateRefreshToken(user.id, user.email);
 
-    const accessToken = this.jwt.generateAccessToken(
-      user.id,
-      user.email,
-      null,
-      user.username
-    );
-    const refreshToken = this.jwt.generateRefreshToken(user.id, user.email);
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 15);
 
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 15);
+      await this.refreshTokenRepository.create(
+        user.id,
+        refreshToken,
+        expiresAt,
+      );
 
-     await this.refreshTokenRepository.create(user.id, refreshToken, expiresAt);
-
-    return { accessToken, refreshToken };
-  } catch (error) {
-    if (error instanceof ConflictError) throw error;
-    throw new InternalServerError("Failed to register user");
-  }
+      return { accessToken, refreshToken };
+    } catch (error) {
+      if (error instanceof ConflictError) throw error;
+      throw new InternalServerError("Failed to register user");
+    }
   }
 
   async login(email: string, password: string) {
-    try{
-    const user = await this.userRepository.findByEmail(email);
-    if (!user) throw new NotFoundError("User");
+    try {
+      const user = await this.userRepository.findByEmail(email);
+      if (!user) throw new NotFoundError("User");
 
-    const isPasswordValid = await bcrypt.compare(password, user.password_hash);
-    if (!isPasswordValid) throw new UnauthorizedError("Invalid Credentials");
+      const isPasswordValid = await bcrypt.compare(
+        password,
+        user.password_hash,
+      );
+      if (!isPasswordValid) throw new UnauthorizedError("Invalid Credentials");
 
-    const storeId = user.store?.id || null;
-    const accessToken = this.jwt.generateAccessToken(
-      user.id,
-      user.email,
-      storeId,
-      user.username
-    );
-    const refreshToken = this.jwt.generateRefreshToken(user.id, user.email);
-    const expiresAt = new Date();
-    expiresAt.setDate(expiresAt.getDate() + 15);
+      const storeId = user.store?.id || null;
+      const accessToken = this.jwt.generateAccessToken(
+        user.id,
+        user.email,
+        storeId,
+        user.username,
+      );
+      const refreshToken = this.jwt.generateRefreshToken(user.id, user.email);
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 15);
 
-    await this.refreshTokenRepository.create(user.id, refreshToken, expiresAt);
+      await this.refreshTokenRepository.create(
+        user.id,
+        refreshToken,
+        expiresAt,
+      );
 
-    return { accessToken, refreshToken };
-  } catch (error) {
-    if (error instanceof NotFoundError || error instanceof UnauthorizedError) {
-      throw error;
+      return { accessToken, refreshToken };
+    } catch (error) {
+      if (
+        error instanceof NotFoundError ||
+        error instanceof UnauthorizedError
+      ) {
+        throw error;
+      }
+      throw new InternalServerError("Failed to login");
     }
-    throw new InternalServerError("Failed to login");
-  }
   }
 
   async refreshTokens(refreshToken: string) {
     try {
       const userId = this.jwt.getUserFromRefreshToken(refreshToken);
 
-      const storedRefreshToken = await this.refreshTokenRepository.findByUserId(
-        userId
-      );
+      const storedRefreshToken =
+        await this.refreshTokenRepository.findByUserId(userId);
 
       if (
         !storedRefreshToken ||
@@ -104,11 +120,11 @@ try{
         user.id,
         user.email,
         storeId,
-        user.username
+        user.username,
       );
       const newRefreshToken = this.jwt.generateRefreshToken(
         user.id,
-        user.email
+        user.email,
       );
 
       const expiresAt = new Date();
@@ -117,12 +133,15 @@ try{
       await this.refreshTokenRepository.updateByUserId(
         user.id,
         newRefreshToken,
-        expiresAt
+        expiresAt,
       );
 
       return { accessToken: newAccessToken, refreshToken: newRefreshToken };
     } catch (error) {
-      if (error instanceof UnauthorizedError || error instanceof NotFoundError) {
+      if (
+        error instanceof UnauthorizedError ||
+        error instanceof NotFoundError
+      ) {
         throw error;
       }
       throw new InternalServerError("Failed to refresh tokens");

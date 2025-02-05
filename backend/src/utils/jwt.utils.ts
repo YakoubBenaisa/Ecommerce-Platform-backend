@@ -15,7 +15,7 @@ export default class JwtUtils {
     userId: string,
     email: string,
     storeId: string | null,
-    username: string
+    username: string,
   ): string {
     return jwt.sign({ userId, email, storeId, username }, this.JWT_SECRET, {
       expiresIn: "1d",
@@ -66,12 +66,10 @@ export default class JwtUtils {
       };
       return decoded;
     } catch {
-     
       throw new Error("Invalid token");
     }
   }
 
-  
   getUserFromRefreshToken(token: string): string {
     const decoded = jwt.verify(token, this.REFRESH_TOKEN_SECRET) as {
       userId: string;

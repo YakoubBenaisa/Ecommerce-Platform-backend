@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  
   "dependencies": {
     "@prisma/client": "^6.2.1",
     "@types/form-data": "^2.2.1",

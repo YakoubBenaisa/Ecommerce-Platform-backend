@@ -18,7 +18,7 @@ import ProductService from "../services/product.service";
 import IProductRepository from "../repositories/interfaces/IProductRepository";
 import ProductRepository from "../repositories/product.repository";
 import ImageUtils from "../utils/images.utils";
-import  GlobalErrorHandler  from "../middlewares/errors.middlware";
+import GlobalErrorHandler from "../middlewares/errors.middlware";
 import ICategoryService from "../services/Interfaces/ICategoryService";
 import CategoryService from "../services/category.service";
 import ICategoryRepository from "../repositories/interfaces/ICategoryRepository";
@@ -27,8 +27,14 @@ import ChargiliAccountRepository from "../repositories/chargiliAccount.repositor
 import ChargiliAccountService from "../services/chargiliAccount.service";
 import IChargiliAccountService from "../services/Interfaces/IChargiliAccountService";
 import IChargiliAccountRepository from "../repositories/interfaces/IChargiliAccountRepository";
-
-
+import IMetaRepository from "../repositories/interfaces/IMetaRepository";
+import MetaRepository from "../repositories/meta.repository";
+import IMetaService from "../services/Interfaces/IMetaService";
+import MetaService from "../services/meta.service";
+import ICustomerRepository from "../repositories/interfaces/ICustomerRepository";
+import CustomerRepository from "../repositories/customer.repository";
+import ICustomerService from "../services/Interfaces/ICustomerService";
+import CustomerService from "../services/customer.service";
 
 //________________utils_______________________
 
@@ -46,12 +52,8 @@ container.register("jwt", {
 
 container.register("db", { useClass: db });
 
-
 // Register services
-container.register("errorsHandler",{useClass: GlobalErrorHandler } );
-
-
-
+container.register("errorsHandler", { useClass: GlobalErrorHandler });
 
 //_____________user module _______________________
 container.register<IUserRepository>("IUserRepository", {
@@ -85,12 +87,11 @@ container.register<IProductService>("IProductService", {
 });
 
 //_________category module _____________
-// Register the repository
+
 container.register<ICategoryRepository>("ICategoryRepository", {
   useClass: CategoryRepository,
 });
 
-// Register the service
 container.register<ICategoryService>("ICategoryService", {
   useClass: CategoryService,
 });
@@ -103,6 +104,21 @@ container.register<IChargiliAccountService>("IChargiliAccountService", {
   useClass: ChargiliAccountService,
 });
 
+//___________Meta Integration module ___________
+container.register<IMetaRepository>("IMetaRepository", {
+  useClass: MetaRepository,
+});
 
+container.register<IMetaService>("IMetaService", {
+  useClass: MetaService,
+});
+//____________ Customer module ______________
+container.register<ICustomerRepository>("ICustomerRepository", {
+  useClass: CustomerRepository,
+});
+
+container.register<ICustomerService>("ICustomerService", {
+  useClass: CustomerService,
+});
 
 export { container };

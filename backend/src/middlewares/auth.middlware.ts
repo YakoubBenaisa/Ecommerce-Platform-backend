@@ -10,11 +10,10 @@ const responseUtils = container.resolve(ResponseUtils);
 export default async function authMiddleware(
   req: RequestWithUser,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) {
   try {
     const token = req.header("Authorization")?.replace("Bearer ", "");
-    
 
     if (!token) {
       responseUtils.sendUnauthorizedResponse(res);
@@ -22,13 +21,10 @@ export default async function authMiddleware(
     }
 
     const user = await jwt.getUserFromToken(token);
-    
 
-    
-
-    req.user = user; 
-    next(); 
+    req.user = user;
+    next();
   } catch (error: any) {
-    responseUtils.sendErrorResponse(res, error.message); 
+    responseUtils.sendErrorResponse(res, error.message);
   }
 }

@@ -6,7 +6,6 @@ import authMiddleware from "../middlewares/auth.middlware";
 import {
   createProductSchema,
   updateProductSchema,
-  
   storeIdParamSchema,
 } from "../validations/product.validation";
 import imagesMiddleware from "../middlewares/images.middlware";
@@ -18,12 +17,12 @@ const productController = container.resolve(ProductController);
 const imageUtils = container.resolve(ImageUtils);
 
 router.post(
-  "/", 
+  "/",
   authMiddleware,
   imagesMiddleware,
   validateRequest(createProductSchema),
-  
-   (req, res, next: NextFunction) =>  productController.create(req, res, next)
+
+  (req, res, next: NextFunction) => productController.create(req, res, next),
 );
 
 router.put(
@@ -31,32 +30,21 @@ router.put(
   authMiddleware,
   imagesMiddleware,
   validateRequest(updateProductSchema),
-   (req, res, next: NextFunction) =>  productController.update(req, res, next)
+  (req, res, next: NextFunction) => productController.update(req, res, next),
 );
 
-router.delete(
-  "/:id",
-  authMiddleware,
-   (req, res, next: NextFunction) =>  productController.delete(req, res, next)
+router.delete("/:id", authMiddleware, (req, res, next: NextFunction) =>
+  productController.delete(req, res, next),
 );
 
-router.get(
-  "/:id",
-   (req, res, next: NextFunction) =>  productController.getById(req, res, next)
+router.get("/:id", (req, res, next: NextFunction) =>
+  productController.getById(req, res, next),
 );
 
-router.get(
-  "/stores/:storeId/products",
-   (req, res, next: NextFunction) =>
-     productController.getByStoreId(req, res, next)
+router.get("/stores/:storeId/products", (req, res, next: NextFunction) =>
+  productController.getByStoreId(req, res, next),
 );
 
 router.get("/images/:imageName", imageUtils.getImage);
 
-export default router; 
-
-
-
-
-
-         
+export default router;

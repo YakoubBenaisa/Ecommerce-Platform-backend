@@ -176,11 +176,9 @@ model MetaIntegration {
   page_id            String
   app_id             String
   access_token       String
-  webhook_verify_token String
+  
   integration_status IntegrationMode @default(development_mode)
-  webhook_token      String
-  webhook_port       Int
-  webhook_url        String
+  
   created_at         DateTime       @default(now())
   updated_at         DateTime       @updatedAt
 }

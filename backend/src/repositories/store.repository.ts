@@ -14,24 +14,19 @@ export default class StoreRepository implements IStoreRepository {
   }
 
   async create(storeData: TStoreCreate) {
-
     // Check if the user already owns a store
     const existingStore = await this.prisma.store.findUnique({
-        where: { owner_id: storeData.owner_id },
-    }); 
+      where: { owner_id: storeData.owner_id },
+    });
 
-    if (existingStore) 
-        throw new ConflictError("This user already owns a store.");
-    
+    if (existingStore)
+      throw new ConflictError("This user already owns a store.");
 
     // Create new store if the user doesn't have one
     return this.prisma.store.create({
-        data: storeData,
+      data: storeData,
     });
-
-    
-}
-
+  }
 
   async update(storeData: TStoreUpdate) {
     return this.prisma.store.update({
@@ -59,18 +54,12 @@ export default class StoreRepository implements IStoreRepository {
       },
     });
 
-
-  
-  
-    
     return store as TStoreWithProducts | null;
   }
-
 
   async getStoreByName(name: string) {
     return this.prisma.store.findFirst({
       where: { name },
     });
-    
   }
-} 
+}

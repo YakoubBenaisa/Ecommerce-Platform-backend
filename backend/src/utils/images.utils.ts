@@ -4,11 +4,11 @@ import path from "path";
 import fs from "fs";
 import { injectable, singleton, inject } from "tsyringe";
 import ResponseUtils from "./response.utils";
-import { 
-  BadRequestError, 
-  NotFoundError, 
-  InternalServerError, 
-  ConflictError 
+import {
+  BadRequestError,
+  NotFoundError,
+  InternalServerError,
+  ConflictError,
 } from "../types/errors"; // Adjust import path
 import { JsonArray, JsonValue } from "@prisma/client/runtime/library";
 
@@ -23,7 +23,6 @@ export default class ImageHandler {
         fs.mkdirSync(this.uploadDirectory, { recursive: true });
       }
     } catch (error) {
-    
       throw new InternalServerError("Failed to initialize image storage");
     }
   }
@@ -41,8 +40,10 @@ export default class ImageHandler {
           try {
             // Example async code: in this case, it's synchronous logic,
             // but you could await other asynchronous operations here.
-            const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-            const finalFilename = uniqueSuffix + path.extname(file.originalname);
+            const uniqueSuffix =
+              Date.now() + "-" + Math.round(Math.random() * 1e9);
+            const finalFilename =
+              uniqueSuffix + path.extname(file.originalname);
             cb(null, finalFilename);
           } catch (error) {
             cb(new InternalServerError("Failed to process file name"), "");
@@ -59,74 +60,65 @@ export default class ImageHandler {
           const isValidType =
             allowedTypes.test(file.mimetype) &&
             allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    
-          isValidType ? cb(null, true) : cb(new BadRequestError("Invalid image type"));
+
+          isValidType
+            ? cb(null, true)
+            : cb(new BadRequestError("Invalid image type"));
         } catch (error) {
           cb(new BadRequestError("Invalid image upload attempt"));
         }
       })();
     },
   });
-  
 
   public getImage = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      
       const imageName: string = req.params.imageName;
-      if (!imageName) 
-        throw new BadRequestError("No image provided");
-      
-      
+      if (!imageName) throw new BadRequestError("No image provided");
+
       const filePath = path.join(this.uploadDirectory, imageName);
-  
-      
+
       try {
         await fs.promises.access(filePath);
       } catch (err: any) {
-        
         throw new NotFoundError("Image not found");
       }
-  
+
       // Send the image file as response
       res.sendFile(filePath, (err) => {
-        if (err) 
-          next(new InternalServerError("Failed to serve image file"));
-        
+        if (err) next(new InternalServerError("Failed to serve image file"));
       });
-      
     } catch (error) {
       next(error);
     }
   };
-  
 
   public deleteImage = async (images: JsonValue | null) => {
     if (!Array.isArray(images) || images.length === 0) return; // Skip if images is null or empty
-  
+
     // Filter the images to only include string values
-    const imageStrings = images.filter((image): image is string => typeof image === "string");
-  
+    const imageStrings = images.filter(
+      (image): image is string => typeof image === "string",
+    );
+
     try {
       await Promise.all(
         imageStrings.map(async (image) => {
-          
           const filePath = path.join(this.uploadDirectory, image);
-         
+
           try {
             await fs.promises.access(filePath); // Check if file exists asynchronously
             await fs.promises.unlink(filePath); // Delete file asynchronously
           } catch (err: any) {
-            if (err.code !== "ENOENT") { // ENOENT means file doesn't exist, ignore that case
+            if (err.code !== "ENOENT") {
+              // ENOENT means file doesn't exist, ignore that case
               throw new InternalServerError(`Failed to delete image: ${image}`);
             }
           }
-        })
+        }),
       );
     } catch (error) {
       throw new InternalServerError("Image deletion failed");
     }
   };
-  
-  
-  
 }

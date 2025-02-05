@@ -14,28 +14,28 @@ const userController = container.resolve(UserController);
 userRouter.post(
   "/login",
   validateRequest(userLoginSchema),
-   (req: Request, res: Response, next: NextFunction) => {
-     userController.login(req, res, next);
-  }
+  (req: Request, res: Response, next: NextFunction) => {
+    userController.login(req, res, next);
+  },
 );
 userRouter.post(
   "/register",
   validateRequest(userRegistrationSchema),
-   (req: Request, res: Response, next: NextFunction) =>
-     userController.register(req, res, next)
+  (req: Request, res: Response, next: NextFunction) =>
+    userController.register(req, res, next),
 );
 
 userRouter.post(
   "/refresh-token",
-   (req: Request, res: Response, next: NextFunction) =>
-     userController.refreshToken(req, res, next)
+  (req: Request, res: Response, next: NextFunction) =>
+    userController.refreshToken(req, res, next),
 );
 
 userRouter.post(
   "/logout",
   authMiddleware,
-   (req: Request, res: Response, next: NextFunction) =>
-     userController.logout(req, res, next)
+  (req: Request, res: Response, next: NextFunction) =>
+    userController.logout(req, res, next),
 );
 
 export default userRouter;

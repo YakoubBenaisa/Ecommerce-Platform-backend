@@ -1,6 +1,10 @@
-import { Prisma, Product, Category,PrismaClient } from "@prisma/client";
+import { Prisma, Product, Category, PrismaClient } from "@prisma/client";
 import { NotFoundError } from "../types/errors";
-import { TProductCreate, TProductUpdate, TProductWithCategory } from "../types/types";
+import {
+  TProductCreate,
+  TProductUpdate,
+  TProductWithCategory,
+} from "../types/types";
 import IProductRepository from "./interfaces/IProductRepository";
 import { injectable, inject } from "tsyringe";
 import db from "../config/db";
@@ -19,27 +23,21 @@ export default class ProductRepository implements IProductRepository {
   }
 
   async update(data: TProductUpdate) {
-   
-      const { id, ...updateData } = data;
-      
-      return await this.prisma.product.update({
-        where: { id },
-        data: updateData as Prisma.ProductUpdateInput,
-      });
-   
+    const { id, ...updateData } = data;
+
+    return await this.prisma.product.update({
+      where: { id },
+      data: updateData as Prisma.ProductUpdateInput,
+    });
   }
 
   async delete(id: string) {
-    
-      return await this.prisma.product.delete({
-        where: { id },
-      });
-   
+    return await this.prisma.product.delete({
+      where: { id },
+    });
   }
 
-
   async findById(id: string) {
-
     const product = await this.prisma.product.findFirst({
       where: { id },
       include: { category: true },
@@ -50,23 +48,24 @@ export default class ProductRepository implements IProductRepository {
   }
 
   async findByStoreId(store_id: string) {
-    return  this.prisma.product.findMany({
+    return this.prisma.product.findMany({
       where: { store_id },
       include: { category: true },
-      orderBy: { created_at: 'desc' },
+      orderBy: { created_at: "desc" },
     });
-    
   }
 
   async findByCategoryId(category_id: string) {
     return this.prisma.product.findMany({
       where: { category_id },
       include: { category: true },
-      orderBy: { created_at: 'desc' },
+      orderBy: { created_at: "desc" },
     });
   }
 
-  async findByIdsToCheckInventory(ids: string[]): Promise<Pick<Product, "id" | "name" | "price" | "inventory_count">[]> {
+  async findByIdsToCheckInventory(
+    ids: string[],
+  ): Promise<Pick<Product, "id" | "name" | "price" | "inventory_count">[]> {
     return this.prisma.product.findMany({
       where: { id: { in: ids } },
       select: {

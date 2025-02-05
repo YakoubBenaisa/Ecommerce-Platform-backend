@@ -1,4 +1,3 @@
-
 import { TCategoryCreate } from "../../types/types";
 import { Category } from "@prisma/client";
 
