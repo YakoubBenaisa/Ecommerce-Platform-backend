@@ -38,6 +38,7 @@ export default class CustomerRepository implements ICustomerRepository {
   }
 
   async findByStore(storeId: string) {
+  
     return this.prisma.customer.findMany({
       where: { store_id: storeId },
     });

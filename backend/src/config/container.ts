@@ -35,6 +35,18 @@ import ICustomerRepository from "../repositories/interfaces/ICustomerRepository"
 import CustomerRepository from "../repositories/customer.repository";
 import ICustomerService from "../services/Interfaces/ICustomerService";
 import CustomerService from "../services/customer.service";
+import IPaymentRepository from "../repositories/interfaces/IPaymentRepository";
+import PaymentRepository from "../repositories/payment.repository";
+import PaymentProcessorFactory from "../services/payment/payment.factory";
+import CashOnDeliveryPay from "../services/payment/cashOnDelivery.service";
+import ChargiliPay from "../services/payment/chargiliPay.service";
+import { PaymentService } from "../services/payment/payment.service";
+import CheckoutMediatorService from "../services/checkoutMediator.service";
+import IOrderService from "../services/Interfaces/IOrderService";
+import OrderService from "../services/order.service";
+import IOrderRepository from "../repositories/interfaces/IOrederRepository";
+import OrderRepository from "../repositories/order.repository";
+import IPaymentService from "../services/Interfaces/IPaymentService";
 
 //________________utils_______________________
 
@@ -119,6 +131,43 @@ container.register<ICustomerRepository>("ICustomerRepository", {
 
 container.register<ICustomerService>("ICustomerService", {
   useClass: CustomerService,
+});
+//______________ Payment module ______________________
+
+// Register repositories
+container.register<IPaymentRepository>("IPaymentRepository", {
+  useClass: PaymentRepository,
+});
+
+// Register payment strategies
+container.register("CashOnDeliveryPay", { useClass: CashOnDeliveryPay });
+container.register("ChargiliPay", ChargiliPay);
+
+// Register payment processor factory
+container.register("PaymentProcessorFactory", {
+  useClass: PaymentProcessorFactory,
+});
+
+// Register payment service
+container.register<IPaymentService>("IPaymentService", {
+  useClass: PaymentService,
+});
+
+//____________ Order module _________________
+
+// Register order repository
+container.register<IOrderRepository>("IOrderRepository", {
+  useClass: OrderRepository,
+});
+
+// Register order service
+container.register<IOrderService>("IOrderService", {
+  useClass: OrderService,
+});
+
+// Register the CheckoutMediatorService
+container.register<CheckoutMediatorService>("CheckoutMediatorService", {
+  useClass: CheckoutMediatorService,
 });
 
 export { container };

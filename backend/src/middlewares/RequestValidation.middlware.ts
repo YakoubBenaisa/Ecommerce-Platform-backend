@@ -8,26 +8,20 @@ const responseUtils = container.resolve(ResponseUtils);
 export const validateRequest =
   (schema: ZodSchema) =>
   (req: Request, res: Response, next: NextFunction): void => {
-    try {
-      const result = schema.safeParse(req.body);
-      req.body = result.data;
-      next();
-    } catch (error: any) {
-      if (error instanceof ZodError) {
-        // Map the Zod errors to a custom error structure with 'field' and 'message'
-        const formattedErrors = error.errors.map((err: any) => ({
-          field: err.path.join("."), // Join the path if it's a nested field
-          message: err.message,
-        }));
+    const result = schema.safeParse(req.body);
 
-        // Send structured validation error response with custom format
-        responseUtils.sendValidationError(
-          res,
-          "Validation failed",
-          formattedErrors,
-        );
-      } else {
-        next(error);
-      }
+    if (!result.success) {
+      // Map the Zod errors to a custom error structure with 'field' and 'message'
+      const formattedErrors = result.error.errors.map((err) => ({
+        field: err.path.join("."), // Join the path if it's a nested field
+        message: err.message,
+      }));
+
+      
+       responseUtils.sendValidationError(res, "Validation failed", formattedErrors);
     }
+
+    // Assign parsed data to req.body
+    req.body = result.data;
+    next();
   };

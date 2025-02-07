@@ -15,6 +15,7 @@ app.use(bodyParser.json());
 
 app.use("/api/v1", routes);
 
+
 // ======================
 // 404 Handler
 // ======================
@@ -39,7 +40,7 @@ app.use(
 );
 
 // routes list
-//console.log(listEndpoints(app));
+// console.log(listEndpoints(app));
 
 // Start the server
 const PORT = process.env.PORT || 3005;

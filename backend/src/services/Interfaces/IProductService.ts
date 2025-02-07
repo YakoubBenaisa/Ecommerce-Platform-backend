@@ -8,8 +8,9 @@ export default interface IProductService {
   findById(id: string): Promise<Product>;
   findByStoreId(store_id: string): Promise<Product[] | null>;
   findByCategoryId(category_id: string): Promise<Product[]>;
+  findByIds(productIds:string[]): Promise<Product[]>;
 
   CheckInventory(
-    inventoryData: { id: string; inventory_count: string }[],
-  ): Promise<boolean>;
+    inventoryData: { id: string; inventory_count: number }[],
+  ): Promise<Product[]>;
 }

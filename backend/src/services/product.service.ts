@@ -94,34 +94,69 @@ export default class ProductService implements IProductService {
     }
   }
 
-  async CheckInventory(
-    inventoryData: { id: string; inventory_count: string }[],
-  ) {
-    try {
-      const productIds = inventoryData.map((item) => item.id);
-      const products =
-        await this.productRepository.findByIdsToCheckInventory(productIds);
 
-      for (const item of inventoryData) {
-        const product = products.find((p) => p.id === item.id);
-        if (!product) throw new NotFoundError(`Product`);
 
-        const requestedCount = parseInt(item.inventory_count);
-        if (product.inventory_count < requestedCount)
-          throw new ConflictError(
-            `Insufficient inventory for product ${product.name}`,
-          );
-      }
+async findByIds(productIds: string[]) {
+  try {
+    const products = await this.productRepository.findByIds(productIds);
 
-      return true;
-    } catch (error) {
-      if (error instanceof NotFoundError || error instanceof ConflictError) {
-        throw error;
-      }
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        handlePrismaError(error, { resource: "Product" });
-      }
-      throw new InternalServerError("Failed to check inventory");
+    // Check if all requested products were found
+    if (products.length !== productIds.length) {
+      // Determine which IDs are missing
+      const foundIds = products.map((product: any) => product.id);
+      const missingIds = productIds.filter(id => !foundIds.includes(id));
+      throw new NotFoundError(`Products with IDs ${missingIds.join(', ')} not found`);
     }
+
+    return products;
+  } catch (error) {
+    
+    if (error instanceof NotFoundError) {
+      throw error;
+    }
+
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      handlePrismaError(error, { resource: "Product" });
+    }
+
+    throw new InternalServerError("Failed to find product");
   }
 }
+
+async CheckInventory(
+  inventoryData: { id: string; inventory_count: number }[],
+) {
+  try {
+    const productIds = inventoryData.map((item) => item.id);
+    // Use the findByIds method to ensure all products exist and retrieve their details.
+    const products = await this.findByIds(productIds);
+
+    for (const item of inventoryData) {
+      // Since findByIds already ensures each product exists,
+      // this check is technically redundant, but is kept for clarity.
+      const product = products.find((p) => p.id === item.id);
+      if (!product) {
+        throw new NotFoundError(`Product with id ${item.id} not found`);
+      }
+
+      const requestedCount = item.inventory_count;
+      if (product.inventory_count < requestedCount) {
+        throw new ConflictError(
+          `Insufficient inventory for product ${product.name}`
+        );
+      }
+    }
+
+    return products;
+  } catch (error) {
+    if (error instanceof NotFoundError || error instanceof ConflictError) {
+      throw error;
+    }
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      handlePrismaError(error, { resource: "Product" });
+    }
+    throw new InternalServerError("Failed to check inventory");
+  }
+}
+}
+

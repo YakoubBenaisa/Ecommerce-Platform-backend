@@ -5,4 +5,5 @@ export default interface IChargiliAccountService {
   setupPayment(data: TChargiliAccountCreate): Promise<ChargiliAccount>;
   deletePaymentSetup(storeId: string): Promise<ChargiliAccount>;
   updatePaymentSetup(data: TChargiliAccountCreate): Promise<ChargiliAccount>;
+  getSecretKeyByStoreID(storeId: string): Promise<string | null>;
 }

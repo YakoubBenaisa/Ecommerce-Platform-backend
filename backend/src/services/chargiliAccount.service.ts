@@ -61,4 +61,20 @@ export default class ChargiliAccountService implements IChargiliAccountService {
       throw new InternalServerError("Failed to update ChargiliAccount");
     }
   }
+
+  async getSecretKeyByStoreID(storeId: string) {
+    try {
+      const result = await this.chargiliAccountRepo.getSecretKeyByStoreID(storeId);
+      if (result) {
+        return result.SECRET_KEY;
+      } else {
+        throw new Error("Secret Key not found");
+      }
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError)
+        handlePrismaError(error, { resource: "ChargiliAccount" });
+
+      throw new InternalServerError("Failed to get Secret Key");
+    }
+  }
 }

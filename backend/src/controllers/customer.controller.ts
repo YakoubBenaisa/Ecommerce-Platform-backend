@@ -11,11 +11,11 @@ export class CustomerController {
     @inject("responseUtils") private responseUtils: ResponseUtils
   ) {}
 
-  async createCustomer(req: Request, res: Response, next: NextFunction) {
+  async createCustomer(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const data: TCustomerCreate = {
         ...req.body,
-        store_id: req.params.storeId,
+        store_id: req.user.storeId,
       };
       const result = await this.customerService.createCustomer(data);
        this.responseUtils.sendSuccessResponse(res, result, 201);
@@ -39,6 +39,7 @@ export class CustomerController {
 
   async getCustomerWithOrders(req: Request, res: Response, next: NextFunction) {
     try {
+     
       const { customerId } = req.params;
       const result = await this.customerService.getCustomerWithOrders(
         customerId
@@ -51,8 +52,10 @@ export class CustomerController {
 
   async getStoreCustomers(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
-      
-      const result = await this.customerService.getStoreCustomers(req.user.storeId);
+   
+      const storeId = req.user.storeId;
+   
+      const result = await this.customerService.getStoreCustomers(storeId);
        this.responseUtils.sendSuccessResponse(res, result);
     } catch (error) {
       next(error);

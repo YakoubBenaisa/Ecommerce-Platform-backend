@@ -34,4 +34,11 @@ export default class ChargiliAccountRepository
       },
     });
   }
+
+  async getSecretKeyByStoreID(storeId:string){
+    return this.prisma.chargiliAccount.findUnique({
+      where:{store_id:storeId},
+    select:{SECRET_KEY:true}
+  });
+}
 }

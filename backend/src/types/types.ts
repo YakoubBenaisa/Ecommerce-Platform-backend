@@ -8,6 +8,9 @@ import {
   Prisma,
   Customer,
   Order,
+  Payment,
+  OrderItem,
+  
 } from "@prisma/client";
 import { Decimal, JsonValue } from "@prisma/client/runtime/library";
 import { Request } from "express";
@@ -95,7 +98,7 @@ export type TChargiliAccountCreate = Omit<
   "id" | "created_at" | "updated_at"
 >;
 
-//________________Custemer Types _______________________
+//________________Customer Types _______________________
 export type TCustomerCreate = Omit<
   Customer,
   "id" | "created_at" | "updated_at"
@@ -106,3 +109,35 @@ export type TCustomerUpdate = Partial<TCustomerCreate> & { id: string };
 export type TCustomerWithOrders = Customer & {
   orders: Order[];
 };
+
+//_________________ Payment types _______________________
+export type TPaymentCreate = Omit<Payment, "id" | "created_at" | "updated_at" | "gateway_response"> & {
+  gateway_response?: Exclude<Payment["gateway_response"], null>;
+};
+
+export type TPaymentUpdate =  Partial<TPaymentCreate>;
+
+//_________________ Order types _______________________
+export type TOrderCreate = Omit<Prisma.OrderUncheckedCreateInput, "id" | "created_at" | "updated_at">;
+
+export type TOrderUpdate = Partial<Prisma.OrderUncheckedCreateInput>;
+
+export type TOrderWithProductsAndCustomer = Order & {
+  order_items: OrderItem[];
+  customer: Customer;
+};
+export type TOrderItemsCreate = {
+  product_id: string;
+  quantity: number;
+  unit_price: number;
+};
+export type TOrderItems = {product_id:string,quantity:number,unit_price:number}[];
+
+export type TOrderWithItems = Order & { order_items: OrderItem[] };
+
+export type TPlaceOrderData = {
+  customer:TCustomerCreate,
+  order:TOrderCreate,
+  items:{id:string,inventory_count:number}[]
+};
+

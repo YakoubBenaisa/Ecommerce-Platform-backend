@@ -27,7 +27,7 @@ const storeController = container.resolve(StoreController);
 const categoryController = container.resolve(CategoryController);
 const chargiliAccountController = container.resolve(ChargiliAccountController);
 const metaController = container.resolve(MetaController);
-const customerController = container.resolve(CustomerController);
+
 
 storeRouter.post(
   "/",
@@ -123,29 +123,5 @@ storeRouter.delete(
     metaController.delete(req, res, next),
 );
 
-storeRouter.post(
-  '/stores/:storeId/customers',
-  validateRequest(customerCreateSchema),
-  (req, res, next) => customerController.createCustomer(req, res, next)
-);
-
-storeRouter.put(
-  '/stores/customers/:customerId',
-  authMiddleware,
-  validateRequest(customerUpdateSchema),
-  (req, res, next) => customerController.updateCustomer(req, res, next)
-);
-
-storeRouter.get(
-  '/stores/customers/:customerId',
-  authMiddleware,
-  (req, res, next) => customerController.getCustomerWithOrders(req, res, next)
-);
-
-storeRouter.get(
-  '/stores/customers',
-  authMiddleware,
-  (req, res, next) => customerController.getStoreCustomers(req, res, next)
-);
 
 export default storeRouter;

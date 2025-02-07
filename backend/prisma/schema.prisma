@@ -121,7 +121,7 @@ model Order {
   customer             Customer     @relation(fields: [customer_id], references: [id], onDelete: Restrict)
   total_amount         Decimal
   status               OrderStatus  @default(pending)
-  payment_method       PaymentMethod
+  payment_method       PaymentMethod @default(cash_on_delivery)
   order_source         OrderSource  @default(platform)
   customer_messenger_id String?
   address              Json?

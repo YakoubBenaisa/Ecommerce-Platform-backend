@@ -63,17 +63,9 @@ export default class ProductRepository implements IProductRepository {
     });
   }
 
-  async findByIdsToCheckInventory(
-    ids: string[],
-  ): Promise<Pick<Product, "id" | "name" | "price" | "inventory_count">[]> {
+  async findByIds(ids: string[]) {
     return this.prisma.product.findMany({
       where: { id: { in: ids } },
-      select: {
-        id: true,
-        name: true,
-        price: true,
-        inventory_count: true,
-      },
     });
   }
 }

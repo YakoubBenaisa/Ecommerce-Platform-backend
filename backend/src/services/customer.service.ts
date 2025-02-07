@@ -25,6 +25,8 @@ export default class CustomerService implements ICustomerService {
     try {
       return await this.customerRepository.create(data);
     } catch (error) {
+      
+     
       if (error instanceof Prisma.PrismaClientKnownRequestError)
         handlePrismaError(error, { resource: "customer" });
 
@@ -56,6 +58,7 @@ export default class CustomerService implements ICustomerService {
 
   async getStoreCustomers(storeId: string) {
     try {
+     
       return this.customerRepository.findByStore(storeId);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError)
