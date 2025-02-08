@@ -124,9 +124,11 @@ async findByIds(productIds: string[]) {
 }
 
 async CheckInventory(
-  inventoryData: { id: string; inventory_count: number }[],
+  inventoryData: { id: string; quantity: number }[],
 ) {
   try {
+
+    console.log("inventoryData",inventoryData)
     const productIds = inventoryData.map((item) => item.id);
     // Use the findByIds method to ensure all products exist and retrieve their details.
     const products = await this.findByIds(productIds);
@@ -139,7 +141,10 @@ async CheckInventory(
         throw new NotFoundError(`Product with id ${item.id} not found`);
       }
 
-      const requestedCount = item.inventory_count;
+      const requestedCount = item.quantity;
+      console.log("product.quantity",product.inventory_count)
+      console.log("requestedCount",requestedCount)
+      console.log("product.quantity < requestedCount",product.inventory_count < requestedCount)
       if (product.inventory_count < requestedCount) {
         throw new ConflictError(
           `Insufficient inventory for product ${product.name}`
@@ -147,16 +152,36 @@ async CheckInventory(
       }
     }
 
-    return products;
-  } catch (error) {
-    if (error instanceof NotFoundError || error instanceof ConflictError) {
-      throw error;
+      return products;
+    } catch (error) {
+      console.log("STOOOCK",error)
+      if (error instanceof NotFoundError || error instanceof ConflictError) {
+        throw error;
+      }
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        handlePrismaError(error, { resource: "Product" });
+      }
+      throw new InternalServerError("Failed to check inventory");
     }
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      handlePrismaError(error, { resource: "Product" });
-    }
-    throw new InternalServerError("Failed to check inventory");
   }
-}
+
+  async updateInventory(
+    items: { product_id: string; quantity: number; updateType: 'increase' | 'decrease' }[]
+  ) {
+    try {
+      for (const item of items) {
+        await this.productRepository.updateInventory(
+          item.product_id,
+          item.quantity,
+          item.updateType
+        );
+      }
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        handlePrismaError(error, { resource: "Product" });
+      }
+      throw new InternalServerError("Failed to update inventory");
+    }
+  }
 }
 

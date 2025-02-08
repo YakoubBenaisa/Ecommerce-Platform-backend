@@ -4,7 +4,7 @@ import IOrderService from "../services/Interfaces/IOrderService";
 import { RequestWithUser, TOrderCreate, TOrderUpdate, TOrderItemsCreate, TOrderItems, TPlaceOrderData } from "../types/types";
 import ResponseUtils from "../utils/response.utils";
 import CheckoutMediatorService from "../services/checkoutMediator.service";
-
+import {OrderStatus } from "@prisma/client"
 @injectable()
 export class OrderController {
   constructor(
@@ -62,6 +62,17 @@ export class OrderController {
       const { id } = req.params;
       const order = await this.orderService.getOrderById(id);
        this.responseUtils.sendSuccessResponse(res, order);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateOrderStatus(req: RequestWithUser, res: Response, next: NextFunction) {
+    try {
+      const { id } = req.params;
+      const { status } = req.body as { status: OrderStatus };
+      const order = await this.orderService.updateOrderStatus(id, status);
+      this.responseUtils.sendSuccessResponse(res, order);
     } catch (error) {
       next(error);
     }

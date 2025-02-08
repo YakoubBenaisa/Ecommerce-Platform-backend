@@ -7,7 +7,7 @@ import {
   TOrderItemsCreate,
   TOrderUpdate,
 } from "../types/types";
-import { Order, Prisma } from "@prisma/client";
+import { Order, Prisma, OrderStatus } from "@prisma/client";
 import handlePrismaError from "../utils/handlePrismaErrors";
 import { InternalServerError, NotFoundError } from "../types/errors";
 import IProductRepository from "../repositories/interfaces/IProductRepository";
@@ -38,6 +38,33 @@ export default class OrderService implements IOrderService {
         handlePrismaError(error, { resource: "Order" });
   
       throw new InternalServerError("Failed to create order");
+    }
+  }
+  
+
+  async updateOrderStatus(orderId: string, status: OrderStatus): Promise<Order> {
+    try {
+      const order = await this.orderRepository.getOrderById(orderId);
+      if (!order) {
+        throw new NotFoundError("Order not found", orderId);
+      }
+  
+      if (status === OrderStatus.cancelled) {
+        // When an order is cancelled, increase the inventory for each item.
+        const itemsToUpdate = order.order_items.map(item => ({
+          product_id: item.product_id,
+          quantity: item.quantity,
+          updateType: "increase" as const,
+        }));
+        await this.productService.updateInventory(itemsToUpdate);
+      } 
+  
+      return await this.orderRepository.update({ id: orderId, status });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        handlePrismaError(error, { resource: "Order", id: orderId });
+      }
+      throw new InternalServerError("Failed to update order status");
     }
   }
   

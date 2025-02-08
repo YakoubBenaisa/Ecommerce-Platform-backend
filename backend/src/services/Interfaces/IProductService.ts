@@ -11,6 +11,9 @@ export default interface IProductService {
   findByIds(productIds:string[]): Promise<Product[]>;
 
   CheckInventory(
-    inventoryData: { id: string; inventory_count: number }[],
+    inventoryData: { id: string; quantity: number }[],
   ): Promise<Product[]>;
+   updateInventory(
+    items: { product_id: string; quantity: number; updateType: 'increase' | 'decrease' }[]
+  ):Promise<void>
 }

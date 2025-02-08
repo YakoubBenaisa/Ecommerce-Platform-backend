@@ -12,7 +12,10 @@ export default interface IProductRepository {
   findById(id: string): Promise<TProductWithCategory>;
   findByStoreId(store_id: string): Promise<TProductWithCategory[] | null>;
   findByCategoryId(category_id: string): Promise<TProductWithCategory[]>;
-  findByIds(
-    ids: string[],
-  ): Promise<Product[]>;
+  findByIds(ids: string[]): Promise<Product[]>;
+  updateInventory(
+    productId: string,
+    quantity: number,
+    updateType: 'increase' | 'decrease'
+  ):Promise<Product>;
 }

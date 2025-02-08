@@ -1,7 +1,5 @@
 import { z } from "zod";
-
-
-
+import { OrderStatus } from "@prisma/client";
 
 export const placeOrderSchema = z.object({
   customer: z
@@ -27,8 +25,6 @@ export const placeOrderSchema = z.object({
   ),
 });
 
-
-
 export const orderItemSchema = z.object({
   product_id: z.string().uuid(),
   quantity: z.number().int().positive(),
@@ -53,4 +49,8 @@ export const updateOrderSchema = z.object({
   order_source: z.enum(["messenger", "platform", "in_store"]).optional(),
   customer_messenger_id: z.string().optional(),
   address: z.any().optional(),
+});
+
+export const updateOrderStatusSchema = z.object({
+  status: z.nativeEnum(OrderStatus),
 });

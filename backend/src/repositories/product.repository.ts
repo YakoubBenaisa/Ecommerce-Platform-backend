@@ -68,4 +68,32 @@ export default class ProductRepository implements IProductRepository {
       where: { id: { in: ids } },
     });
   }
+
+  async updateInventory(
+    productId: string,
+    quantity: number,
+    updateType: 'increase' | 'decrease'
+  ) {
+    const product = await this.prisma.product.findUnique({
+      where: { id: productId },
+    });
+  
+    if (!product) {
+      throw new NotFoundError("Product not found", productId);
+    }
+  
+    // Choose the operation based on updateType
+    const inventoryUpdate =
+      updateType === "increase"
+        ? { increment: quantity }
+        : { decrement: quantity };
+  
+    await this.prisma.product.update({
+      where: { id: productId },
+      data: {
+        inventory_count: inventoryUpdate,
+      },
+    });
+    return product;
+  }
 }

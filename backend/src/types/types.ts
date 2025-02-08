@@ -138,6 +138,6 @@ export type TOrderWithItems = Order & { order_items: OrderItem[] };
 export type TPlaceOrderData = {
   customer:TCustomerCreate,
   order:TOrderCreate,
-  items:{id:string,inventory_count:number}[]
+  items:{id:string,quantity:number}[]
 };
 

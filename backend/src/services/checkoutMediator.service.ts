@@ -36,7 +36,10 @@ export default class CheckoutMediatorService {
 
   async processCheckout(receivedData: TPlaceOrderData) {
     try {
-      // Step 1: Separate order, items, and customer data from received data
+      // Debug: Log the initial productPriceMap (should be empty at this point)
+      console.log("Initial productPriceMap:", this.productPriceMap);
+
+      // Step 1: Destructure received data
       const { customer: customerInfo, order: orderInfo, items } = receivedData;
 
       // Step 2: Create Customer
@@ -46,12 +49,9 @@ export default class CheckoutMediatorService {
         phone: customerInfo.phone,
         store_id: orderInfo.store_id,
       };
+      const createdCustomer = await this.customerService.createCustomer(customerData);
 
-      const createdCustomer = await this.customerService.createCustomer(
-        customerData
-      );
-
-      // Step 3: Check Inventory
+      // Step 3: Check Inventory and retrieve products
       const products = await this.productService.CheckInventory(items);
 
       // Populate the productPriceMap with product prices
@@ -77,8 +77,7 @@ export default class CheckoutMediatorService {
       const orderItems: TOrderItems = items.map((item: any) => {
         // Attempt to retrieve the unit price from the map
         let unitPrice = this.productPriceMap.get(item.id);
-
-        // Fallback: If not found in the map, find the product in the products array
+        // Fallback: If not found in the map, locate the product in the products array
         if (unitPrice === undefined) {
           const product = products.find((p) => p.id === item.id);
           if (product) {
@@ -95,24 +94,27 @@ export default class CheckoutMediatorService {
       });
 
       // Step 7: Create Order and Order Items
-      const order = await this.orderService.createOrder(
-        orderCreateData,
-        orderItems
-      );
+      const order = await this.orderService.createOrder(orderCreateData, orderItems);
+      console.log("ProductPriceMap after order creation:", this.productPriceMap);
 
-      // If the payment method is "cash_on_delivery", no payment processing is needed.
+      // Prepare the inventory update payload
+      const itemsToUpdate = items.map((item) => ({
+        product_id: item.id,
+        quantity: item.quantity,
+        updateType: "decrease" as const,
+      }));
+
+      // If payment method is "cash_on_delivery", update inventory and return immediately
       if (order.payment_method === "cash_on_delivery") {
+        await this.productService.updateInventory(itemsToUpdate);
         return {
           customer: createdCustomer,
           order,
         };
       }
 
-      // Step 8: Get Secret Key (for non-cash payment methods)
-      const secret_key: string | null =
-        await this.chargiliAccountService.getSecretKeyByStoreID(
-          orderInfo.store_id
-        );
+      // Step 8: Get Secret Key for payment processing
+      const secret_key: string | null = await this.chargiliAccountService.getSecretKeyByStoreID(orderInfo.store_id);
       if (!secret_key) {
         throw new BadRequestError("Chargili account not found for the store");
       }
@@ -124,10 +126,10 @@ export default class CheckoutMediatorService {
         payment_method: order.payment_method,
         status: "pending",
       };
-      const payment_link: string = await this.paymentService.createPayment(
-        paymentData,
-        secret_key
-      );
+      const payment_link: string = await this.paymentService.createPayment(paymentData, secret_key);
+
+      // Update inventory after successful payment
+      await this.productService.updateInventory(itemsToUpdate);
 
       return {
         customer: createdCustomer,
@@ -141,15 +143,12 @@ export default class CheckoutMediatorService {
 
   private calculateTotalAmount(items: any[]): number {
     let totalAmount = 0;
-
     for (const item of items) {
       const price = this.productPriceMap.get(item.id);
       if (price === undefined)
         throw new ConflictError(`Price for product id ${item.id} not found.`);
-      // Using item.quantity to calculate the total amount
       totalAmount += price * item.quantity;
     }
-
     return totalAmount;
   }
 }

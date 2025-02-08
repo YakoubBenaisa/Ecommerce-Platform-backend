@@ -3,13 +3,13 @@ import { container } from "tsyringe";
 import OrderController from "../controllers/order.controller";
 import authMiddleware from "../middlewares/auth.middlware";
 import { validateRequest } from "../middlewares/RequestValidation.middlware";
-import { createOrderSchema, placeOrderSchema, updateOrderSchema } from "../validations/order.validation";
+import { createOrderSchema, placeOrderSchema, updateOrderSchema, updateOrderStatusSchema } from "../validations/order.validation";
 
 const router = Router();
 const orderController = container.resolve(OrderController);
 
 // Route to create a new order
-router.post("/", authMiddleware, validateRequest(placeOrderSchema), (req, res, next) =>
+router.post("/",  validateRequest(placeOrderSchema), (req, res, next) =>
   orderController.createOrder(req, res, next)
 );
 
@@ -31,6 +31,11 @@ router.get("/", authMiddleware, (req, res, next) =>
 // Route to get a specific order by ID
 router.get("/:id", authMiddleware, (req, res, next) =>
   orderController.getOrderById(req, res, next)
+);
+
+// Route to update order status
+router.patch("/:id/status", authMiddleware, validateRequest(updateOrderStatusSchema), (req, res, next) =>
+  orderController.updateOrderStatus(req, res, next)
 );
 
 export default router;
