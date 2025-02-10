@@ -7,9 +7,20 @@ import { container } from "./config/container";
 import ResponseUtils from "./utils/response.utils";
 import GlobalErrorHandler from "./middlewares/errors.middlware";
 import listEndpoints from "express-list-endpoints";
-import crypto from "crypto";
+
+import { TFindInput } from "./types/types"; // Adjust path as needed
+
 
 const app: Application = express();
+
+
+
+declare module "express-serve-static-core" {
+  interface Request {
+    queryParams: TFindInput;
+  }
+}
+
 
 // Middleware to parse JSON
 app.use(bodyParser.urlencoded({ extended: true }));

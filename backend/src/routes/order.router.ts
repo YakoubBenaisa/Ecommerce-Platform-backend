@@ -4,6 +4,7 @@ import OrderController from "../controllers/order.controller";
 import authMiddleware from "../middlewares/auth.middlware";
 import { validateRequest } from "../middlewares/RequestValidation.middlware";
 import { createOrderSchema, placeOrderSchema, updateOrderSchema, updateOrderStatusSchema } from "../validations/order.validation";
+import parseQueryParams from "../middlewares/parseQueryParams.middlware";
 
 const router = Router();
 const orderController = container.resolve(OrderController);
@@ -24,7 +25,7 @@ router.delete("/:id", authMiddleware, (req, res, next) =>
 );
 
 // Route to get all orders for a store
-router.get("/", authMiddleware, (req, res, next) =>
+router.get("/", authMiddleware,parseQueryParams, (req, res, next) =>
   orderController.getStoreOrders(req, res, next)
 );
 

@@ -1,28 +1,26 @@
 import { Request, Response } from "express";
+import { injectable, inject } from "tsyringe";
 import WebhookService from "../services/webhook.service";
-import { injectable } from "tsyringe";
 
 @injectable()
 class WebhookController {
   // Set your verify token and app secret (ideally via environment variables)
-private VERIFY_TOKEN = process.env.VERIFY_TOKEN || '1234';
-private APP_SECRET = process.env.APP_SECRET || '8a8a47dd9f4a81d4a19957626c950f8d';
-private PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN || "EAAPRfb1UNxMBOyuip5Q9MhKN2auZAhCxrZByWEhaVfvPSZA99RDqWPdH6kLvMpgdoywmp6PqKxdAUVu3uma61jGzSro7JVZAUu2tRYXs2MNbtTbwbnGEY2QuxHLXMaWdWXnO9ZADKjsGGYTrCIaaQe8vxHw4Mu0LiuLv1CVPzQcdonfEXhPDSp0l1uasZCsCEEhgZDZD";
+  private readonly VERIFY_TOKEN: string = process.env.VERIFY_TOKEN || "";
 
-  private webhookService: WebhookService;
+  constructor(
+    @inject(WebhookService) private webhookService: WebhookService
+  ) {}
 
-
-  constructor() {
-    this.webhookService = new WebhookService();
-  }
-
-  verifyWebhook(req: Request, res: Response) {
-    const mode = req.query["hub.mode"];
-    const token = req.query["hub.verify_token"];
-    const challenge = req.query["hub.challenge"];
+  /**
+   * Verifies the webhook using the token provided in the query parameters.
+   */
+  verifyWebhook(req: Request, res: Response): void {
+    const mode = req.query["hub.mode"] as string;
+    const token = req.query["hub.verify_token"] as string;
+    const challenge = req.query["hub.challenge"] as string;
 
     if (mode && token) {
-      if (mode === "subscribe" && token === process.env.VERIFY_TOKEN) {
+      if (mode === "subscribe" && token === this.VERIFY_TOKEN) {
         console.log("WEBHOOK_VERIFIED");
         res.status(200).send(challenge);
       } else {
@@ -33,17 +31,20 @@ private PAGE_ACCESS_TOKEN = process.env.PAGE_ACCESS_TOKEN || "EAAPRfb1UNxMBOyuip
     }
   }
 
-  handleWebhookEvent(req: Request, res: Response) {
-
-    console.log("IS WOOOOOOOOOOOOOOOOORK")
+  /**
+   * Handles incoming webhook events by passing each event to the WebhookService.
+   */
+  async handleWebhookEvent(req: Request, res: Response): Promise<void> {
+    console.log("Received webhook event");
     const body = req.body;
 
     if (body.object === "page") {
-      body.entry.forEach((entry: any) => {
-        entry.messaging.forEach((event: any) => {
-          this.webhookService.processEvent(event);
-        });
-      });
+      // Process each entry in the webhook payload
+      for (const entry of body.entry) {
+        for (const event of entry.messaging) {
+          await this.webhookService.processEvent(event);
+        }
+      }
       res.status(200).send("EVENT_RECEIVED");
     } else {
       res.sendStatus(404);

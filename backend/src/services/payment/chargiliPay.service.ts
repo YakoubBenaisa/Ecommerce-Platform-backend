@@ -1,26 +1,37 @@
-import { injectable } from 'tsyringe';
-import  IPaymentStrategy  from '../Interfaces/IPaymentStrategy';
-import { InternalServerError } from '../../types/errors';
-import { Decimal } from '@prisma/client/runtime/library';
+import { injectable } from "tsyringe";
+import IPaymentStrategy from "../Interfaces/IPaymentStrategy";
+import { InternalServerError } from "../../types/errors";
+import { Decimal } from "@prisma/client/runtime/library";
 
 @injectable()
-export default class  ChargiliPay implements IPaymentStrategy {
-  async processPayment(amount: Decimal,secret_key: string) {
+export default class ChargiliPay implements IPaymentStrategy {
+  async processPayment(amount: Decimal, secret_key: string) {
     try {
-    
-      return {
-        success: true,
-      
-        gateway_response: {
-          provider: 'chargili',
-          amount: amount,
-          currency: 'dzd',
-          processed_at: new Date(),
-          payment_link: 'https://..................'
-        }
+      const options = {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${secret_key}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: amount.toNumber(),
+          currency: "dzd",
+          success_url: "https://google.com",
+        }),
       };
+
+      const response = await fetch(
+        "https://pay.chargily.net/test/api/v2/checkouts",
+        options
+      );
+      console.log("response", response);
+      if (!response.ok) {
+        throw new InternalServerError("Failed to process Chargili payment");
+      }
+
+      return { success: true, gateway_response: await response.json() };
     } catch (error) {
-      throw new InternalServerError('Failed to process Chargili payment');
+      throw new InternalServerError("Failed to process Chargili payment");
     }
   }
 }

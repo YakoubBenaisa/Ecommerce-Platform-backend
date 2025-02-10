@@ -12,6 +12,7 @@ import {
   TCustomerCreate,
   TCustomerUpdate,
   TCustomerWithOrders,
+  TFindInput,
 } from "../types/types";
 
 @injectable()
@@ -56,15 +57,20 @@ export default class CustomerService implements ICustomerService {
     }
   }
 
-  async getStoreCustomers(storeId: string) {
+  async getStoreCustomers(data:TFindInput
+  ) {
     try {
-     
-      return this.customerRepository.findByStore(storeId);
+      return await this.customerRepository.findByStore(data);
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError)
+      console.error("Error fetching store customers:", error);
+  
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
         handlePrismaError(error, { resource: "customer" });
-
-      throw new InternalServerError("Failed to retrieve customer");
+      }
+  
+      throw new InternalServerError("Failed to retrieve customers. Please try again later.");
     }
   }
-}
+  
+  }
+

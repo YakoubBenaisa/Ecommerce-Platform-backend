@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { injectable, inject } from "tsyringe";
 import IOrderService from "../services/Interfaces/IOrderService";
-import { RequestWithUser, TOrderCreate, TOrderUpdate, TOrderItemsCreate, TOrderItems, TPlaceOrderData } from "../types/types";
+import { RequestWithUser, TOrderCreate, TOrderUpdate, TOrderItemsCreate, TOrderItems, TPlaceOrderData, TFindInput } from "../types/types";
 import ResponseUtils from "../utils/response.utils";
 import CheckoutMediatorService from "../services/checkoutMediator.service";
 import {OrderStatus } from "@prisma/client"
@@ -50,12 +50,19 @@ export class OrderController {
   async getStoreOrders(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
       const storeId = req.user.storeId;
-      const orders = await this.orderService.getStoreOrders(storeId);
-       this.responseUtils.sendSuccessResponse(res, orders);
+    const data:TFindInput = { ...req.queryParams, storeId }; // Merge parsed query params with storeId
+
+  
+      // ✅ Fetch orders using the validated query params
+      const orders = await this.orderService.getStoreOrders(data);
+  
+      // ✅ Send success response
+      this.responseUtils.sendSuccessResponse(res, orders);
     } catch (error) {
       next(error);
     }
   }
+  
 
   async getOrderById(req: Request, res: Response, next: NextFunction) {
     try {

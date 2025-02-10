@@ -2,7 +2,7 @@ import { injectable, inject } from "tsyringe";
 import { Request, Response, NextFunction } from "express";
 import ICustomerService from "../services/Interfaces/ICustomerService";
 import ResponseUtils from "../utils/response.utils";
-import { RequestWithUser, TCustomerCreate, TCustomerUpdate } from "../types/types";
+import { RequestWithUser, TCustomerCreate, TCustomerUpdate, TFindInput } from "../types/types";
 
 @injectable()
 export class CustomerController {
@@ -52,13 +52,20 @@ export class CustomerController {
 
   async getStoreCustomers(req: RequestWithUser, res: Response, next: NextFunction) {
     try {
-   
+      
       const storeId = req.user.storeId;
-   
-      const result = await this.customerService.getStoreCustomers(storeId);
-       this.responseUtils.sendSuccessResponse(res, result);
+    const data:TFindInput = { ...req.queryParams, storeId }; // Merge parsed query params with storeId
+
+     
+  
+      const result = await this.customerService.getStoreCustomers(
+        data
+      );
+  
+      this.responseUtils.sendSuccessResponse(res, result);
     } catch (error) {
       next(error);
     }
   }
+  
 }

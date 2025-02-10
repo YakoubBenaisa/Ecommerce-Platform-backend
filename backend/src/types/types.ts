@@ -59,7 +59,9 @@ export type TProductCreate = Omit<
   "id" | "created_at" | "updated_at"
 > & {
   images?: Prisma.InputJsonValue | null;
+  
 };
+
 
 export type TProductUpdate = {
   id: string; // Required for updates
@@ -139,5 +141,38 @@ export type TPlaceOrderData = {
   customer:TCustomerCreate,
   order:TOrderCreate,
   items:{id:string,quantity:number}[]
+};
+
+
+
+
+
+export type TPagination = {
+  totalCount: number;
+  totalPages: number;
+  currentPage: number;
+  perPage: number;
+};
+
+
+export type TFindInput = {
+  storeId: string;
+  page: number;  // Defaults to 1
+  limit: number; // Defaults to 10
+  search: string;
+  sortBy: string; // Sorting field
+  order: "asc" | "desc"; // Sorting order
+  skip:number,
+};
+
+
+
+
+
+
+
+export type TGetStoreOrders = {
+  orders: TOrderWithProductsAndCustomer[];
+  pagination: TPagination;
 };
 

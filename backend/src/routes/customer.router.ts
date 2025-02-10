@@ -9,6 +9,7 @@ import {
   customerCreateSchema,
   customerUpdateSchema,
 } from "../validations/custemer.validation";
+import parseQueryParams from "../middlewares/parseQueryParams.middlware";
 
 const customerRouter = Router();
 
@@ -38,6 +39,7 @@ customerRouter.post(
         customerRouter.get(
           '/',
           authMiddleware,
+          parseQueryParams,
           (req, res, next) => customerController.getStoreCustomers(req, res, next)
         );
 

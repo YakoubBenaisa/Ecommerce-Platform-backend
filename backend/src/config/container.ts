@@ -47,6 +47,8 @@ import OrderService from "../services/order.service";
 import IOrderRepository from "../repositories/interfaces/IOrederRepository";
 import OrderRepository from "../repositories/order.repository";
 import IPaymentService from "../services/Interfaces/IPaymentService";
+import { RedisClient } from "./redis";
+import ProductsCacheRepository from "../repositories/product.cache";
 
 //________________utils_______________________
 
@@ -64,8 +66,17 @@ container.register("jwt", {
 
 container.register("db", { useClass: db });
 
-// Register services
+
 container.register("errorsHandler", { useClass: GlobalErrorHandler });
+
+
+container.register("RedisClient", {
+  useClass: RedisClient,
+});
+
+container.register("ProductsCacheRepository",{
+  useClass : ProductsCacheRepository,
+})
 
 //_____________user module _______________________
 container.register<IUserRepository>("IUserRepository", {

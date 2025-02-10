@@ -21,6 +21,7 @@ import {
   customerCreateSchema,
   customerUpdateSchema,
 } from "../validations/custemer.validation";
+import parseQueryParams from "../middlewares/parseQueryParams.middlware";
 
 const storeRouter = Router();
 const storeController = container.resolve(StoreController);
@@ -47,7 +48,7 @@ storeRouter.put(
     storeController.updateStore(req, res, next),
 );
 
-storeRouter.get("/:id", (req: Request, res: Response, next: NextFunction) =>
+storeRouter.get("/:id",parseQueryParams, (req: Request, res: Response, next: NextFunction) =>
   storeController.getStoreById(req, res, next),
 );
 

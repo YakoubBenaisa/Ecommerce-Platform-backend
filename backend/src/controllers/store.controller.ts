@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { inject, injectable } from "tsyringe";
 import IStoreService from "../services/Interfaces/IStoreService";
-import { TStoreCreate, TStoreUpdate, RequestWithUser } from "../types/types";
+import { TStoreCreate, TStoreUpdate, RequestWithUser, TFindInput } from "../types/types";
 import ResponseUtils from "../utils/response.utils";
 
 @injectable()
@@ -40,7 +40,10 @@ export default class StoreController {
   async getStoreById(req: Request, res: Response, next: NextFunction) {
     try {
       const storeId = req.params.id;
-      const store = await this.storeService.getStoreByIdWithProducts(storeId);
+      const data:TFindInput = { ...req.queryParams, storeId }; // Merge parsed query params with storeId
+
+  
+      const store = await this.storeService.getStoreByIdWithProducts(data);
 
       this.responseUtils.sendSuccessResponse(res, store);
     } catch (error: any) {

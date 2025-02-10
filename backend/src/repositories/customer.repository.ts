@@ -5,6 +5,7 @@ import {
   TCustomerCreate,
   TCustomerUpdate,
   TCustomerWithOrders,
+  TFindInput,
 } from "../types/types";
 
 @injectable()
@@ -37,10 +38,42 @@ export default class CustomerRepository implements ICustomerRepository {
     });
   }
 
-  async findByStore(storeId: string) {
+  async findByStore(data: TFindInput) {
+    
+    const where: any = { store_id: data.storeId };
   
-    return this.prisma.customer.findMany({
-      where: { store_id: storeId },
+    // 🔍 Case-insensitive search (name & email)
+    if (data.search) {
+      where.OR = [
+        { name: { contains: data.search } },
+        { email: { contains: data.search } },
+      ];
+    }
+  
+    // 🔽 Fetch customers with pagination, search & sorting
+    const customers = await this.prisma.customer.findMany({
+      where,
+      skip: data.skip,
+      take: data.limit,
+      orderBy: {
+        [data.sortBy ?? "createdAt"]: data.order ?? "desc", // Default sorting
+      },
     });
+  
+    // 📊 Get total count of matching customers
+    const total = await this.prisma.customer.count({ where });
+  
+    // 📄 Return paginated response
+    return {
+      customers,
+      pagination: {
+        totalCount: total,
+        totalPages: Math.ceil(total / data.limit),
+        currentPage: data.page,
+        perPage: data.limit,
+      },
+    };
   }
+  
+  
 }

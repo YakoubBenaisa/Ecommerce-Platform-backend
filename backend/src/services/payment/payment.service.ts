@@ -43,11 +43,11 @@ export class PaymentService implements IPaymentService  {
           : PaymentStatus.failed,
         gateway_response: processorResponse.gateway_response,
       };
-
+console.log("paymentData",paymentData)
       const payment = await this.paymentRepository.create(paymentData);
-      const payment_link: string =
-        processorResponse.gateway_response.payment_link;
-      return payment_link;
+      const checkout_url: string =
+        processorResponse.gateway_response.checkout_url;
+      return checkout_url;
     } catch (error) {
       if (error instanceof BadRequestError) throw error;
       throw new InternalServerError("Failed to create payment");

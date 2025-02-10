@@ -4,6 +4,7 @@ import {
   TOrderUpdate,
   TOrderWithProductsAndCustomer,
   TOrderItemsCreate,
+  TFindInput,
 } from "../types/types";
 import IOrderRepository from "./interfaces/IOrederRepository";
 import { injectable, inject } from "tsyringe";
@@ -47,15 +48,51 @@ export default class OrderRepository implements IOrderRepository {
     });
   }
 
-  async getStoreOrders(storeId: string) {
-    return this.prisma.order.findMany({
-      where: { store_id:storeId },
+  async getStoreOrders(data: TFindInput) {
+    
+   
+    const where: any = { store_id: data.storeId };
+  
+    // 🔍 Case-insensitive search (customer name & email)
+    if (data.search) {
+      where.OR = [
+        { customer: { name: { contains: data.search } } },
+        { customer: { email: { contains: data.search } } },
+      ];
+    }
+  
+    // 🔽 Fetch orders with pagination, search & sorting
+    const orders = await this.prisma.order.findMany({
+      where,
+      skip : data.skip,
+      take: data.limit,
+      orderBy: {
+        [data.sortBy]: data.order, // Default sorting
+      },
       include: {
         order_items: true,
         customer: true,
       },
     });
+  
+    // 📊 Get total count of matching orders
+    const total = await this.prisma.order.count({ where });
+  
+    return {
+      orders,
+      pagination: {
+        totalCount: total,
+        totalPages: Math.ceil(total / data.limit),
+        currentPage: data.page,
+        perPage: data.limit,
+      },
+    };
   }
+  
+
+
+
+
 
  
 

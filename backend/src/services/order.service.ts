@@ -6,6 +6,7 @@ import {
   TOrderItems,
   TOrderItemsCreate,
   TOrderUpdate,
+   TFindInput
 } from "../types/types";
 import { Order, Prisma, OrderStatus } from "@prisma/client";
 import handlePrismaError from "../utils/handlePrismaErrors";
@@ -89,12 +90,13 @@ export default class OrderService implements IOrderService {
     }
   }
 
-  async getStoreOrders(storeId: string) {
+  async getStoreOrders(data: TFindInput) {
     try {
-      return await this.orderRepository.getStoreOrders(storeId);
+      return await this.orderRepository.getStoreOrders(data);
     } catch (error) {
+      console.log(error);
       if (error instanceof Prisma.PrismaClientKnownRequestError)
-        handlePrismaError(error, { resource: "Order", id: storeId });
+        handlePrismaError(error, { resource: "Order"  });
       throw new InternalServerError("Failed to retrieve store orders");
     }
   }

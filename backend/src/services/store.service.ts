@@ -1,7 +1,7 @@
 import { injectable, inject } from "tsyringe";
 import IStoreService from "./Interfaces/IStoreService";
 import IStoreRepository from "../repositories/interfaces/IStoreRepository";
-import { TStoreCreate, TStoreUpdate } from "../types/types";
+import { TFindInput, TStoreCreate, TStoreUpdate } from "../types/types";
 import {
   NotFoundError,
   ConflictError,
@@ -47,14 +47,14 @@ export default class StoreService implements IStoreService {
     }
   }
 
-  async getStoreByIdWithProducts(id: string) {
+  async getStoreByIdWithProducts(data:TFindInput) {
     try {
-      return this.storeRepository.getStoreByIdWithProducts(id);
+      return this.storeRepository.getStoreByIdWithProducts(data);
     } catch (error) {
-      console.log(error);
+  
 
       if (error instanceof Prisma.PrismaClientKnownRequestError)
-        handlePrismaError(error, { resource: "Store", id });
+        handlePrismaError(error, { resource: "Store" });
 
       throw new InternalServerError("Failed to retrieve store");
     }

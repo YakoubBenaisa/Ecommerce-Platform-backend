@@ -13,8 +13,7 @@ export const placeOrderSchema = z.object({
     }),
   order: z.object({
     store_id: z.string().uuid({ message: "Invalid store_id" }),
-    payment_method: z.string().optional().default("cash_on_delivery"),
-   
+    payment_method: z.enum(["baridi_mob", "cash_on_delivery"]).optional().default("cash_on_delivery"),
     address: z.any().optional(),
   }),
   items: z.array(

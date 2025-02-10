@@ -3,6 +3,8 @@ import {
   TCustomerCreate,
   TCustomerUpdate,
   TCustomerWithOrders,
+  TFindInput,
+  TPagination,
 } from "../../types/types";
 
 export default interface ICustomerService {
@@ -11,5 +13,9 @@ export default interface ICustomerService {
   getCustomerWithOrders(
     customerId: string,
   ): Promise<TCustomerWithOrders | null>;
-  getStoreCustomers(storeId: string): Promise<Customer[]>;
+  getStoreCustomers(data:TFindInput
+  ): Promise<{
+    customers: Customer[];
+    pagination: TPagination
+  }>;
 }
