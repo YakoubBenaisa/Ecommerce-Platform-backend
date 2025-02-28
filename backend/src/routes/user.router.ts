@@ -38,4 +38,11 @@ userRouter.post(
     userController.logout(req, res, next),
 );
 
+userRouter.get(
+  "/me",
+  authMiddleware,
+
+  (req: Request, res: Response, next: NextFunction) =>
+    userController.retrieve(req, res, next),
+)
 export default userRouter;

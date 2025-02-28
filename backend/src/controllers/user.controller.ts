@@ -3,6 +3,7 @@ import IUserService from "../services/Interfaces/IUserService";
 import { injectable, inject, autoInjectable } from "tsyringe";
 import ResponseUtils from "../utils/response.utils";
 import "reflect-metadata";
+import { RequestWithUser } from "../types/types";
 
 @injectable()
 export default class UserController {
@@ -60,6 +61,18 @@ export default class UserController {
 
       this.responseUtils.sendSuccessResponse(res, "Logged out successfully");
     } catch (error: any) {
+      next(error);
+    }
+  }
+  async retrieve(req: RequestWithUser, res: Response, next: NextFunction){
+
+    try{
+      const {userId, username, email, storeId} = req.user;
+      const data = {userId, username, email, storeId};
+
+      this.responseUtils.sendSuccessResponse(res, data);
+
+    } catch(error: any){
       next(error);
     }
   }
