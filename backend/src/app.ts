@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import express, { Application, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
+import cors from "cors";
 import routes from "./routes";
 import webhookRoutes from "./routes/webhook.routes";
 import { container } from "./config/container";
@@ -14,13 +15,13 @@ import { TFindInput } from "./types/types"; // Adjust path as needed
 const app: Application = express();
 
 
-
 declare module "express-serve-static-core" {
   interface Request {
     queryParams: TFindInput;
   }
 }
 
+app.use(cors());
 
 // Middleware to parse JSON
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -59,7 +60,7 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 });
 
 // routes list
-// console.log(listEndpoints(app));
+console.log(listEndpoints(app));
 
 // Start the server
 const PORT = process.env.PORT || 3005;
