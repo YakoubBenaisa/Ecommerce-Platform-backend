@@ -160,4 +160,12 @@ export class UserService implements IUserService {
       throw new InternalServerError("Failed to logout");
     }
   }
+  async getUser(token: string){
+    try{
+      const user = this.jwt.getUserFromToken(token);
+      return user;
+    } catch(error){
+      throw new InternalServerError("Failed to get user");
+    }
+  }
 }

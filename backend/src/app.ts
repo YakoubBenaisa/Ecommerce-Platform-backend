@@ -13,7 +13,7 @@ import { TFindInput } from "./types/types"; // Adjust path as needed
 
 
 const app: Application = express();
-
+const cookieParser = require("cookie-parser");
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -22,7 +22,7 @@ declare module "express-serve-static-core" {
 }
 
 app.use(cors());
-
+app.use(cookieParser());
 // Middleware to parse JSON
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());

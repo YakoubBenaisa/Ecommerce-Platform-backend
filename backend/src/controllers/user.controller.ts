@@ -4,6 +4,7 @@ import { injectable, inject, autoInjectable } from "tsyringe";
 import ResponseUtils from "../utils/response.utils";
 import "reflect-metadata";
 import { RequestWithUser } from "../types/types";
+import JwtUtils from "../utils/jwt.utils";
 
 @injectable()
 export default class UserController {
@@ -38,10 +39,12 @@ export default class UserController {
 
   async refreshToken(req: Request, res: Response, next: NextFunction) {
     try {
-      // Custom header name
-      const refreshToken = req.header("x-refresh-token");
+      // Custom cookie name
+      const refreshToken = req.cookies["x-refresh-token"];
 
-      if (!refreshToken) throw new Error("Invalid refresh token ");
+      console.log("refreshToken: ", refreshToken);
+
+      if (!refreshToken) throw new Error("Invalid refresh token");
 
       const token = await this.userService.refreshTokens(refreshToken);
 
@@ -67,9 +70,8 @@ export default class UserController {
   async retrieve(req: RequestWithUser, res: Response, next: NextFunction){
 
     try{
-      const {userId, username, email, storeId} = req.user;
-      const data = {userId, username, email, storeId};
-
+      const token = req.header("Authorization") ? req.header("Authorization")?.replace("Bearer ", "") : req.cookies["x-access-token"];
+      const data = this.userService.getUser(token);
       this.responseUtils.sendSuccessResponse(res, data);
 
     } catch(error: any){
