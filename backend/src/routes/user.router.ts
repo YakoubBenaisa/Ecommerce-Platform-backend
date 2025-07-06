@@ -45,4 +45,11 @@ userRouter.get(
   (req: Request, res: Response, next: NextFunction) =>
     userController.retrieve(req, res, next),
 )
+userRouter.get(
+  "/validate",
+  authMiddleware,
+
+  (req: Request, res: Response, next: NextFunction) =>
+    userController.validateToken(req, res, next),
+)
 export default userRouter;

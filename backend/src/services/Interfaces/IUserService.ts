@@ -10,4 +10,5 @@ export default interface IUserService {
   login(email: string, password: string): Promise<TAuthToken | null>;
   refreshTokens(refreshToken: string): Promise<TAuthToken | null>;
   logout(refreshToken: string): Promise<void>;
+  validateToken(token: string): Promise<boolean>;
 }

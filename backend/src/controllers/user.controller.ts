@@ -17,9 +17,12 @@ export default class UserController {
     try {
       const { email, password } = req.body;
 
-      const token = await this.userService.login(email, password);
+      const tokens = await this.userService.login(email, password);
+      /*res.cookie("x-refresh-token", tokens?.refreshToken, 
+                { expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), 
+                  httpOnly: true, secure: false, sameSite: "strict" });*/
 
-      this.responseUtils.sendSuccessResponse(res, token);
+      this.responseUtils.sendSuccessResponse(res, tokens);
     } catch (error: any) {
       next(error);
     }
@@ -30,7 +33,7 @@ export default class UserController {
       const { email, password, username } = req.body;
 
       const tokens = await this.userService.register(email, password, username);
-
+      //res.cookie("x-refresh-token", tokens?.refreshToken, { expires: new Date(Date.now() + 15 * 24 * 60 * 60 * 1000), httpOnly: true, secure: false, sameSite: "strict" });
       this.responseUtils.sendSuccessResponse(res, tokens, 201);
     } catch (error: any) {
       next(error);
@@ -39,10 +42,8 @@ export default class UserController {
 
   async refreshToken(req: Request, res: Response, next: NextFunction) {
     try {
-      // Custom cookie name
-      const refreshToken = req.cookies["x-refresh-token"];
-
-      console.log("refreshToken: ", refreshToken);
+    
+      const refreshToken = req.header('Authorization')?.replace('Bearer ','') 
 
       if (!refreshToken) throw new Error("Invalid refresh token");
 
@@ -71,8 +72,21 @@ export default class UserController {
 
     try{
       const token = req.header("Authorization") ? req.header("Authorization")?.replace("Bearer ", "") : req.cookies["x-access-token"];
-      const data = this.userService.getUser(token);
+      console.log("token: ", token)
+      const data = await this.userService.getUser(token);
+      console.log(data);
+      
       this.responseUtils.sendSuccessResponse(res, data);
+
+    } catch(error: any){
+      next(error);
+    }
+  }
+
+  async validateToken(req: Request, res: Response, next: NextFunction){
+    try{
+
+      this.responseUtils.sendSuccessResponse(res, {'isValid': true});
 
     } catch(error: any){
       next(error);

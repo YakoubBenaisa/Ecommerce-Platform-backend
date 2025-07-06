@@ -1,10 +1,12 @@
 import "reflect-metadata";
 import express, { Application, Request, Response, NextFunction } from "express";
+import { createServer } from "http";
 import bodyParser from "body-parser";
 import cors from "cors";
 import routes from "./routes";
 import webhookRoutes from "./routes/webhook.routes";
 import { container } from "./config/container";
+import WebSocketService from "./services/websocket.service";
 import ResponseUtils from "./utils/response.utils";
 import GlobalErrorHandler from "./middlewares/errors.middlware";
 import listEndpoints from "express-list-endpoints";
@@ -13,7 +15,11 @@ import { TFindInput } from "./types/types"; // Adjust path as needed
 
 
 const app: Application = express();
-const cookieParser = require("cookie-parser");
+const httpServer = createServer(app);  // Create HTTP server
+
+// Initialize WebSocket service with the HTTP server
+const webSocketService = container.resolve<WebSocketService>("WebSocketService");
+webSocketService.initialize(httpServer);
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -21,8 +27,12 @@ declare module "express-serve-static-core" {
   }
 }
 
-app.use(cors());
-app.use(cookieParser());
+app.use(cors({
+  origin: "*"
+}));
+//app.use(cookieParser());
+
+
 // Middleware to parse JSON
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -62,8 +72,8 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 // routes list
 console.log(listEndpoints(app));
 
-// Start the server
-const PORT = process.env.PORT || 3005;
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+// Start the server using httpServer instead of app.listen
+const PORT =  3005;
+httpServer.listen(PORT, '0.0.0.0',() => {
+  console.log(`HTTP & WebSocket Server running on http://localhost:${PORT}`);
 });
